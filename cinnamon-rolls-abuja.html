@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swirl & Bliss — Cinnamon Rolls, Abuja</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink-deep:#d4607a; --pink-mid:#f0a0b4; --pink-light:#fce8ef;
+    --pink-pale:#fff5f8; --cream:#fff9f5; --brown:#7b3f2a;
+    --white:#ffffff; --text-dark:#2d1a12; --text-mid:#6b3a2a;
+    --text-light:#c48a7a; --shadow:rgba(212,96,122,0.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,249,245,0.96);backdrop-filter:blur(12px);border-bottom:1.5px solid var(--pink-mid);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px}
+  .nav-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;font-style:italic;color:var(--pink-deep);cursor:pointer;text-decoration:none}
+  .nav-logo span{color:var(--brown)}
+  .nav-links{display:flex;gap:2rem;align-items:center;list-style:none}
+  .nav-links a{text-decoration:none;color:var(--text-mid);font-size:0.88rem;font-weight:500;cursor:pointer;transition:color .2s}
+  .nav-links a:hover{color:var(--pink-deep)}
+  .nav-cta{background:var(--pink-deep)!important;color:white!important;padding:.5rem 1.3rem;border-radius:30px}
+
+  .page{display:none;min-height:100vh;padding-top:68px}
+  .page.active{display:block}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+  /* HERO */
+  .hero{position:relative;min-height:calc(100vh - 68px);background:linear-gradient(135deg,#fff0f4 0%,#ffe8ef 45%,#ffd6e4 100%);display:flex;align-items:center;overflow:hidden;padding:4rem 5%}
+  .hero-content{position:relative;z-index:2;max-width:500px;animation:fadeUp .7s ease both}
+  .hero-badge{display:inline-block;background:var(--pink-mid);color:var(--brown);font-size:.74rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:.35rem 1rem;border-radius:30px;margin-bottom:1.4rem}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,4.5vw,4rem);font-weight:900;line-height:1.08;margin-bottom:1.2rem}
+  .hero h1 em{color:var(--pink-deep);font-style:italic}
+  .hero p{font-size:1rem;color:var(--text-mid);line-height:1.7;margin-bottom:2.2rem}
+  .hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+  .hero-img-side{position:absolute;right:0;top:0;bottom:0;width:50%;overflow:hidden}
+  .hero-img-side::before{content:'';position:absolute;left:0;top:0;bottom:0;width:55%;background:linear-gradient(to right,#ffe8ef,transparent);z-index:1}
+  .hero-img-side img{width:100%;height:100%;object-fit:cover;display:block}
+
+  .btn-primary{background:var(--pink-deep);color:white;padding:.85rem 2rem;border-radius:40px;font-size:.95rem;font-weight:500;border:none;cursor:pointer;transition:all .2s;box-shadow:0 6px 22px var(--shadow);text-decoration:none;display:inline-block;font-family:'DM Sans',sans-serif}
+  .btn-primary:hover{background:#bf4f68;transform:translateY(-2px)}
+  .btn-outline{background:transparent;color:var(--pink-deep);padding:.85rem 2rem;border-radius:40px;font-size:.95rem;font-weight:500;cursor:pointer;border:2px solid var(--pink-deep);transition:all .2s;font-family:'DM Sans',sans-serif}
+  .btn-outline:hover{background:var(--pink-light)}
+
+  .stats{background:var(--pink-deep);padding:1.8rem 5%;display:flex;justify-content:center;gap:4rem;flex-wrap:wrap}
+  .stat{text-align:center;color:white}
+  .stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900}
+  .stat-label{font-size:.75rem;opacity:.85;letter-spacing:1px;text-transform:uppercase}
+
+  .section-tag{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink-deep);margin-bottom:.8rem}
+  .section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,2.8vw,2.6rem);font-weight:900;color:var(--text-dark);line-height:1.15;margin-bottom:1rem}
+
+  /* CARDS */
+  .flavours-section{padding:5rem 5%;background:var(--pink-pale)}
+  .grid-header{text-align:center;margin-bottom:3.5rem}
+  .flavours-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2rem;max-width:1200px;margin:0 auto}
+  .flavour-card{background:white;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(212,96,122,.1);transition:transform .25s,box-shadow .25s;cursor:pointer}
+  .flavour-card:hover{transform:translateY(-6px);box-shadow:0 14px 38px rgba(212,96,122,.2)}
+  .card-img-wrap{overflow:hidden;position:relative;aspect-ratio:4/3;background:var(--pink-light)}
+  .card-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+  .flavour-card:hover .card-img{transform:scale(1.06)}
+  .card-badge{position:absolute;top:12px;left:12px;background:var(--pink-deep);color:white;font-size:.68rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:.25rem .7rem;border-radius:20px}
+  .card-body{padding:1.2rem 1.4rem 1.5rem}
+  .card-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--text-dark);margin-bottom:.4rem}
+  .card-desc{font-size:.84rem;color:var(--text-mid);line-height:1.55;margin-bottom:1rem}
+  .card-footer{display:flex;align-items:center;justify-content:space-between}
+  .card-price{font-weight:700;color:var(--pink-deep);font-size:1.05rem}
+  .card-btn{background:var(--pink-light);color:var(--pink-deep);border:none;border-radius:20px;padding:.4rem 1rem;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+  .card-btn:hover{background:var(--pink-deep);color:white}
+
+  .why-us{padding:5rem 5%;background:white;text-align:center}
+  .why-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2rem;max-width:900px;margin:3rem auto 0}
+  .why-item{padding:2rem 1.5rem}
+  .why-icon{width:64px;height:64px;border-radius:50%;background:var(--pink-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-size:1.8rem}
+  .why-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--text-dark);margin-bottom:.5rem}
+  .why-text{font-size:.84rem;color:var(--text-mid);line-height:1.6}
+
+  .testimonials{padding:5rem 5%;background:var(--pink-pale);text-align:center}
+  .testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.5rem;max-width:1000px;margin:3rem auto 0}
+  .testi-card{background:white;border-radius:16px;padding:1.8rem;box-shadow:0 2px 14px rgba(212,96,122,.08);text-align:left}
+  .testi-stars{color:#f5a623;font-size:.9rem;margin-bottom:.6rem}
+  .testi-quote{font-size:2.5rem;color:var(--pink-mid);font-family:serif;line-height:1}
+  .testi-text{font-size:.9rem;color:var(--text-mid);line-height:1.65;margin-bottom:1rem;font-style:italic}
+  .testi-author{font-weight:600;color:var(--text-dark);font-size:.88rem}
+
+  .cta-banner{background:linear-gradient(135deg,var(--pink-deep),#c24d6a);padding:4rem 5%;text-align:center}
+  .cta-banner h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.5rem);color:white;font-weight:900;margin-bottom:1rem}
+  .cta-banner p{color:rgba(255,255,255,.85);margin-bottom:2rem}
+  .btn-white{background:white;color:var(--pink-deep);padding:.9rem 2.2rem;border-radius:40px;font-weight:600;font-size:.95rem;border:none;cursor:pointer;transition:all .2s;box-shadow:0 4px 18px rgba(0,0,0,.15);font-family:'DM Sans',sans-serif}
+  .btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+
+  /* FLAVOUR PAGE */
+  .flavour-hero{padding:4rem 5% 3rem;background:linear-gradient(135deg,var(--pink-pale),#ffeaf0);display:flex;align-items:center;gap:4rem;flex-wrap:wrap}
+  .flavour-hero-text{flex:1;min-width:280px}
+  .flavour-hero-img{flex:1;min-width:280px;max-width:500px}
+  .flavour-hero-img img{width:100%;border-radius:24px;box-shadow:0 16px 48px rgba(212,96,122,.25);display:block;aspect-ratio:1;object-fit:cover}
+  .flavour-tag{display:inline-flex;align-items:center;gap:.5rem;background:var(--pink-deep);color:white;padding:.4rem 1.1rem;border-radius:30px;font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:1.2rem}
+  .flavour-page-name{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3.2rem);font-weight:900;color:var(--text-dark);line-height:1.1;margin-bottom:1rem}
+  .flavour-page-name em{color:var(--pink-deep);font-style:italic}
+  .flavour-desc{color:var(--text-mid);line-height:1.75;font-size:1rem;margin-bottom:2rem;max-width:480px}
+  .price-box{display:inline-flex;align-items:baseline;gap:.5rem;background:white;padding:1rem 1.5rem;border-radius:14px;box-shadow:0 4px 16px rgba(212,96,122,.12);margin-bottom:2rem}
+  .fp-label{font-size:.8rem;color:var(--text-light);font-weight:500}
+  .fp-price{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--pink-deep)}
+  .fp-unit{font-size:.8rem;color:var(--text-light)}
+  .size-pills{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:2.2rem}
+  .size-pill{padding:.5rem 1.2rem;border-radius:30px;border:2px solid var(--pink-mid);background:transparent;color:var(--text-mid);font-size:.85rem;cursor:pointer;transition:all .2s;font-weight:500;font-family:'DM Sans',sans-serif}
+  .size-pill.active,.size-pill:hover{background:var(--pink-deep);border-color:var(--pink-deep);color:white}
+  .flavour-details{padding:3rem 5%;background:white}
+  .details-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem;max-width:900px;margin-top:2rem}
+  .detail-item{background:var(--pink-pale);padding:1.2rem 1.4rem;border-radius:14px}
+  .detail-label{font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--pink-deep);font-weight:700;margin-bottom:.3rem}
+  .detail-value{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--text-dark)}
+  .also-like{padding:4rem 5%;background:var(--pink-pale)}
+  .also-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem;max-width:1000px;margin:2rem auto 0}
+
+  /* MENU */
+  .menu-hero{background:linear-gradient(135deg,#ffe0eb,#ffd0e0);padding:4rem 5%;text-align:center}
+  .menu-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--text-dark);margin-bottom:.8rem}
+  .menu-hero p{color:var(--text-mid);max-width:480px;margin:0 auto}
+  .menu-filters{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;padding:2.5rem 5% 0}
+  .filter-btn{padding:.5rem 1.4rem;border-radius:30px;border:2px solid var(--pink-mid);background:transparent;color:var(--text-mid);font-size:.85rem;cursor:pointer;transition:all .2s;font-weight:500;font-family:'DM Sans',sans-serif}
+  .filter-btn.active,.filter-btn:hover{background:var(--pink-deep);border-color:var(--pink-deep);color:white}
+  .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2rem;max-width:1200px;margin:3rem auto;padding:0 5%}
+
+  /* ABOUT */
+  .about-hero{padding:5rem 5%;background:linear-gradient(135deg,var(--pink-pale),#fff);display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+  .about-hero img{width:100%;border-radius:24px;box-shadow:0 12px 40px rgba(212,96,122,.2);display:block;aspect-ratio:1;object-fit:cover}
+  .about-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,3vw,2.8rem);font-weight:900;color:var(--text-dark);margin-bottom:1.2rem}
+  .about-hero p{color:var(--text-mid);line-height:1.75;margin-bottom:1rem}
+  .team-section{padding:4rem 5%;background:white;text-align:center}
+  .team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:2rem;max-width:800px;margin:3rem auto 0}
+  .team-card{padding:1.5rem 1rem}
+  .team-avatar{width:80px;height:80px;border-radius:50%;background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem}
+  .team-name{font-family:'Playfair Display',serif;font-weight:700;color:var(--text-dark);margin-bottom:.3rem}
+  .team-role{font-size:.82rem;color:var(--text-light)}
+
+  /* CONTACT */
+  .contact-wrap{padding:5rem 5%;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;max-width:1100px;margin:0 auto}
+  .contact-info h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--text-dark);margin-bottom:1rem}
+  .contact-info p{color:var(--text-mid);line-height:1.7;margin-bottom:2rem}
+  .c-detail{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
+  .c-icon{width:44px;height:44px;background:var(--pink-light);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+  .c-label{font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--pink-deep);font-weight:600;margin-bottom:.2rem}
+  .c-value{color:var(--text-dark);font-weight:500}
+  .contact-form{background:white;border-radius:20px;padding:2.5rem;box-shadow:0 8px 32px rgba(212,96,122,.1)}
+  .contact-form h3{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--text-dark);margin-bottom:1.5rem}
+  .fg{margin-bottom:1.2rem}
+  .fg label{display:block;font-size:.82rem;font-weight:500;color:var(--text-mid);margin-bottom:.4rem}
+  .fg input,.fg textarea,.fg select{width:100%;padding:.75rem 1rem;border-radius:10px;border:1.5px solid #f0c8d4;background:var(--pink-pale);font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text-dark);outline:none;transition:border-color .2s}
+  .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--pink-deep);background:white}
+  .fg textarea{resize:vertical;min-height:100px}
+
+  /* FOOTER */
+  footer{background:var(--text-dark);padding:3.5rem 5% 2rem;color:rgba(255,255,255,.7)}
+  .footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+  .footer-brand{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;font-style:italic;color:var(--pink-mid);margin-bottom:1rem}
+  .footer-desc{font-size:.85rem;line-height:1.65}
+  .footer-heading{color:white;font-weight:600;font-size:.9rem;margin-bottom:1rem}
+  .footer-links{list-style:none}
+  .footer-links li{margin-bottom:.6rem}
+  .footer-links a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.85rem;transition:color .2s;cursor:pointer}
+  .footer-links a:hover{color:var(--pink-mid)}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.5rem;font-size:.8rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+  .social-links{display:flex;gap:.8rem;margin-top:1.2rem}
+  .s-link{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.85rem;text-decoration:none;color:white;transition:background .2s}
+  .s-link:hover{background:var(--pink-deep)}
+
+  @media(max-width:768px){
+    .hero-img-side{display:none}
+    .about-hero{grid-template-columns:1fr}
+    .contact-wrap{grid-template-columns:1fr}
+    .footer-top{grid-template-columns:1fr}
+    .nav-links li:not(:last-child){display:none}
+    .stats{gap:1.5rem}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" onclick="go('home')">Swirl <span>&</span> Bliss</a>
+  <ul class="nav-links">
+    <li><a onclick="go('home')">Home</a></li>
+    <li><a onclick="go('menu')">Our Rolls</a></li>
+    <li><a onclick="go('about')">About</a></li>
+    <li><a onclick="go('contact')" class="nav-cta">Order Now</a></li>
+  </ul>
+</nav>
+
+<!-- ██ HOME ██ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-badge">🌀 Freshly Baked in Abuja</span>
+      <h1>Every Swirl is a <em>Little Luxury</em></h1>
+      <p>Handcrafted cinnamon rolls in dreamy flavours — Lotus, Oreo, Milk & more. Made fresh daily, delivered across Abuja.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="go('menu')">Explore All Flavours</button>
+        <button class="btn-outline" onclick="go('contact')">Order Now</button>
+      </div>
+    </div>
+    <div class="hero-img-side">
+      <img src="https://images.pexels.com/photos/3724353/pexels-photo-3724353.jpeg?auto=compress&cs=tinysrgb&w=900&h=800&fit=crop"
+           alt="Fresh cinnamon rolls"
+           onerror="this.style.display='none'">
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">8+</div><div class="stat-label">Unique Flavours</div></div>
+    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Happy Customers</div></div>
+    <div class="stat"><div class="stat-num">Daily</div><div class="stat-label">Fresh Baked</div></div>
+    <div class="stat"><div class="stat-num">Abuja</div><div class="stat-label">City-wide Delivery</div></div>
+  </div>
+
+  <section class="flavours-section">
+    <div class="grid-header">
+      <div class="section-tag">Our Signature Rolls</div>
+      <h2 class="section-title">Choose Your Favourite Swirl</h2>
+      <p style="color:var(--text-mid);max-width:480px;margin:0 auto;line-height:1.7">Each roll is lovingly handmade with premium ingredients. Click any flavour to explore its story.</p>
+    </div>
+    <div class="flavours-grid" id="home-grid"></div>
+  </section>
+
+  <section class="why-us">
+    <div class="section-tag">Why Swirl & Bliss</div>
+    <h2 class="section-title">Baked with Love, Delivered with Care</h2>
+    <div class="why-grid">
+      <div class="why-item"><div class="why-icon">🌾</div><div class="why-title">Premium Ingredients</div><div class="why-text">Only high-quality flour, real butter, and imported toppings in every single roll.</div></div>
+      <div class="why-item"><div class="why-icon">🕐</div><div class="why-title">Baked Fresh Daily</div><div class="why-text">No frozen dough — every roll is proofed and baked the morning of your order.</div></div>
+      <div class="why-item"><div class="why-icon">🚚</div><div class="why-title">Abuja-wide Delivery</div><div class="why-text">Wuse, Garki, Maitama, Asokoro, Gwarinpa, Jabi and beyond.</div></div>
+      <div class="why-item"><div class="why-icon">🎁</div><div class="why-title">Gift Boxes Available</div><div class="why-text">Beautifully packaged gift boxes for birthdays and celebrations.</div></div>
+    </div>
+  </section>
+
+  <section class="testimonials">
+    <div class="section-tag">Customer Love</div>
+    <h2 class="section-title">What Abuja is Saying</h2>
+    <div class="testi-grid">
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-quote">"</div><p class="testi-text">The Lotus Biscoff roll is absolutely divine. I ordered six and finished them in one sitting. No regrets!</p><div class="testi-author">Fatima A. — Maitama</div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-quote">"</div><p class="testi-text">Delivered to my office in Wuse 2 within an hour. The Oreo rolls were still warm. I'm obsessed!</p><div class="testi-author">Chidi O. — Wuse 2</div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-quote">"</div><p class="testi-text">Ordered a gift box for my friend's birthday — the packaging was stunning and the rolls were even better!</p><div class="testi-author">Aisha M. — Gwarinpa</div></div>
+    </div>
+  </section>
+
+  <div class="cta-banner">
+    <h2>Ready to Treat Yourself? 🌀</h2>
+    <p>Place your order today and get fresh rolls delivered right to your door in Abuja.</p>
+    <button class="btn-white" onclick="go('contact')">Order Your Rolls Now</button>
+  </div>
+
+  <footer>
+    <div class="footer-top">
+      <div><div class="footer-brand">Swirl & Bliss</div><p class="footer-desc">Abuja's favourite cinnamon roll bakery. Handcrafted daily with premium ingredients and a whole lot of love.</p><div class="social-links"><a class="s-link">📸</a><a class="s-link">💬</a><a class="s-link">🐦</a></div></div>
+      <div><div class="footer-heading">Quick Links</div><ul class="footer-links"><li><a onclick="go('home')">Home</a></li><li><a onclick="go('menu')">Our Rolls</a></li><li><a onclick="go('about')">About Us</a></li><li><a onclick="go('contact')">Order Now</a></li></ul></div>
+      <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a>📍 Wuse 2, Abuja</a></li><li><a>📞 +234 800 000 0000</a></li><li><a>✉️ hello@swirlandbliss.ng</a></li><li><a>🕐 Mon–Sat: 8am–7pm</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Swirl & Bliss. All rights reserved.</span><span>Made with 🤍 in Abuja, Nigeria</span></div>
+  </footer>
+</div>
+
+<!-- ██ FLAVOUR PAGE ██ -->
+<div id="page-flavour" class="page">
+  <div id="flavour-content"></div>
+  <section class="also-like">
+    <div class="section-tag">You Might Also Love</div>
+    <h2 class="section-title">More Dreamy Rolls</h2>
+    <div class="also-grid" id="also-grid"></div>
+  </section>
+  <div class="cta-banner">
+    <h2>Ready to Order? 🌀</h2>
+    <p>Place your order and we'll have these rolls baked fresh and at your door.</p>
+    <button class="btn-white" onclick="go('contact')">Order Now</button>
+  </div>
+  <footer>
+    <div class="footer-top">
+      <div><div class="footer-brand">Swirl & Bliss</div><p class="footer-desc">Abuja's favourite cinnamon roll bakery.</p></div>
+      <div><div class="footer-heading">Links</div><ul class="footer-links"><li><a onclick="go('home')">Home</a></li><li><a onclick="go('menu')">Our Rolls</a></li><li><a onclick="go('contact')">Order Now</a></li></ul></div>
+      <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a>📍 Wuse 2, Abuja</a></li><li><a>📞 +234 800 000 0000</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Swirl & Bliss.</span><span>Made with 🤍 in Abuja</span></div>
+  </footer>
+</div>
+
+<!-- ██ MENU PAGE ██ -->
+<div id="page-menu" class="page">
+  <div class="menu-hero">
+    <div class="section-tag" style="display:block;margin-bottom:.6rem">Full Menu</div>
+    <h1>All Our Cinnamon Rolls</h1>
+    <p>Browse every flavour we bake. Each one is made fresh daily right here in Abuja.</p>
+  </div>
+  <div class="menu-filters">
+    <button class="filter-btn active" onclick="filterMenu('all',this)">All Rolls</button>
+    <button class="filter-btn" onclick="filterMenu('bestseller',this)">Best Sellers</button>
+    <button class="filter-btn" onclick="filterMenu('new',this)">New Flavours</button>
+    <button class="filter-btn" onclick="filterMenu('classic',this)">Classics</button>
+  </div>
+  <div class="menu-grid" id="menu-grid"></div>
+  <footer>
+    <div class="footer-top">
+      <div><div class="footer-brand">Swirl & Bliss</div><p class="footer-desc">Abuja's favourite cinnamon roll bakery.</p></div>
+      <div><div class="footer-heading">Links</div><ul class="footer-links"><li><a onclick="go('home')">Home</a></li><li><a onclick="go('about')">About</a></li><li><a onclick="go('contact')">Order</a></li></ul></div>
+      <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a>📍 Wuse 2, Abuja</a></li><li><a>📞 +234 800 000 0000</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Swirl & Bliss.</span><span>Made with 🤍 in Abuja</span></div>
+  </footer>
+</div>
+
+<!-- ██ ABOUT PAGE ██ -->
+<div id="page-about" class="page">
+  <div class="about-hero">
+    <div>
+      <div class="section-tag">Our Story</div>
+      <h1>Baked from Passion, Swirled with Love</h1>
+      <p>Swirl & Bliss started in 2022 as a home kitchen experiment — one baker, one oven, and an obsession with the perfect cinnamon roll. What began as weekend bakes for friends quickly became Abuja's most talked-about sweet treat.</p>
+      <p>We believe a great cinnamon roll should be cloud-soft, generously filled, and indulgently topped. Every flavour we create is tested dozens of times before it earns a spot on our menu.</p>
+      <p>Today we bake fresh every morning, deliver city-wide, and serve hundreds of happy customers each week — but our kitchen philosophy hasn't changed: make every swirl count.</p>
+      <button class="btn-primary" onclick="go('contact')" style="margin-top:1.5rem">Order Your Rolls</button>
+    </div>
+    <img src="https://images.pexels.com/photos/3933270/pexels-photo-3933270.jpeg?auto=compress&cs=tinysrgb&w=700&h=700&fit=crop"
+         alt="Baker making cinnamon rolls"
+         onerror="this.src='https://placehold.co/700x700/fce8ef/d4607a?text=Our+Bakery'">
+  </div>
+  <section class="team-section">
+    <div class="section-tag">Meet the Team</div>
+    <h2 class="section-title">The Hands Behind Every Roll</h2>
+    <div class="team-grid">
+      <div class="team-card"><div class="team-avatar">👩🏾‍🍳</div><div class="team-name">Amina</div><div class="team-role">Head Baker & Founder</div></div>
+      <div class="team-card"><div class="team-avatar">👨🏾‍🍳</div><div class="team-name">Emeka</div><div class="team-role">Pastry Specialist</div></div>
+      <div class="team-card"><div class="team-avatar">👩🏽‍🍳</div><div class="team-name">Blessing</div><div class="team-role">Flavour Developer</div></div>
+      <div class="team-card"><div class="team-avatar">🚴🏾</div><div class="team-name">Tunde</div><div class="team-role">Delivery & Logistics</div></div>
+    </div>
+  </section>
+  <div class="cta-banner">
+    <h2>Come Taste the Difference 🌀</h2>
+    <p>Order today and discover why Abuja can't stop talking about us.</p>
+    <button class="btn-white" onclick="go('contact')">Place an Order</button>
+  </div>
+  <footer>
+    <div class="footer-top">
+      <div><div class="footer-brand">Swirl & Bliss</div><p class="footer-desc">Abuja's favourite cinnamon roll bakery.</p></div>
+      <div><div class="footer-heading">Links</div><ul class="footer-links"><li><a onclick="go('home')">Home</a></li><li><a onclick="go('menu')">Our Rolls</a></li><li><a onclick="go('contact')">Order</a></li></ul></div>
+      <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a>📍 Wuse 2, Abuja</a></li><li><a>📞 +234 800 000 0000</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Swirl & Bliss.</span><span>Made with 🤍 in Abuja</span></div>
+  </footer>
+</div>
+
+<!-- ██ CONTACT PAGE ██ -->
+<div id="page-contact" class="page" style="background:var(--pink-pale)">
+  <div style="background:linear-gradient(135deg,#ffe0eb,#ffd0e0);padding:3.5rem 5%;text-align:center">
+    <div class="section-tag" style="display:block;margin-bottom:.6rem">Order & Contact</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(1.9rem,3.5vw,3rem);font-weight:900;color:var(--text-dark);margin-bottom:.8rem">Let's Get You Your Rolls 🌀</h1>
+    <p style="color:var(--text-mid);max-width:480px;margin:0 auto;line-height:1.7">Fill the form and we'll confirm your order via WhatsApp. Delivery same day for orders before 2pm.</p>
+  </div>
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <h2>Get In Touch</h2>
+      <p>We're a small team that loves hearing from our customers. Reach out anytime!</p>
+      <div class="c-detail"><div class="c-icon">📍</div><div><div class="c-label">Location</div><div class="c-value">Wuse 2, Abuja FCT, Nigeria</div></div></div>
+      <div class="c-detail"><div class="c-icon">📞</div><div><div class="c-label">WhatsApp & Calls</div><div class="c-value">+234 800 000 0000</div></div></div>
+      <div class="c-detail"><div class="c-icon">✉️</div><div><div class="c-label">Email</div><div class="c-value">hello@swirlandbliss.ng</div></div></div>
+      <div class="c-detail"><div class="c-icon">🕐</div><div><div class="c-label">Hours</div><div class="c-value">Mon – Sat: 8:00am – 7:00pm</div></div></div>
+      <div class="c-detail"><div class="c-icon">🚚</div><div><div class="c-label">Delivery Areas</div><div class="c-value">Wuse, Garki, Maitama, Asokoro, Gwarinpa, Jabi, Kubwa, Lugbe</div></div></div>
+    </div>
+    <div class="contact-form">
+      <h3>Place Your Order</h3>
+      <div class="fg"><label>Full Name</label><input type="text" placeholder="e.g. Amina Bello" /></div>
+      <div class="fg"><label>Phone / WhatsApp</label><input type="tel" placeholder="+234 800 000 0000" /></div>
+      <div class="fg"><label>Flavour</label>
+        <select>
+          <option>Lotus Biscoff — ₦3,500</option>
+          <option>Oreo Dream — ₦3,200</option>
+          <option>Classic Milk — ₦2,800</option>
+          <option>Strawberry Blush — ₦3,000</option>
+          <option>Dark Chocolate — ₦3,400</option>
+          <option>Nutella Hazelnut — ₦3,300</option>
+          <option>Salted Caramel — ₦3,100</option>
+          <option>Original Cinnamon — ₦2,600</option>
+          <option>Mixed Box (4 rolls)</option>
+        </select>
+      </div>
+      <div class="fg"><label>Quantity</label><input type="number" value="1" min="1" /></div>
+      <div class="fg"><label>Delivery Address</label><input type="text" placeholder="e.g. 10 Aminu Kano Crescent, Wuse 2" /></div>
+      <div class="fg"><label>Special Instructions (optional)</label><textarea placeholder="Any allergies, special requests..."></textarea></div>
+      <button class="btn-primary" style="width:100%;font-size:1rem;padding:1rem" onclick="alert('🌀 Order received! We will confirm via WhatsApp shortly. Thank you for choosing Swirl & Bliss!')">Send Order via WhatsApp 💬</button>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-top">
+      <div><div class="footer-brand">Swirl & Bliss</div><p class="footer-desc">Abuja's favourite cinnamon roll bakery.</p></div>
+      <div><div class="footer-heading">Links</div><ul class="footer-links"><li><a onclick="go('home')">Home</a></li><li><a onclick="go('menu')">Our Rolls</a></li><li><a onclick="go('about')">About</a></li></ul></div>
+      <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a>📍 Wuse 2, Abuja</a></li><li><a>📞 +234 800 000 0000</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Swirl & Bliss.</span><span>Made with 🤍 in Abuja</span></div>
+  </footer>
+</div>
+
+<script>
+/* ─── DATA ─── */
+/* Images: multiple fallback sources per flavour */
+const F = [
+  { id:'lotus',   name:'Lotus Biscoff',    emoji:'🍪', badge:'⭐ Best Seller', tag:'bestseller', price:'₦3,500',
+    tagline:'Caramelised cookie heaven in every bite',
+    desc:'Our most popular roll — swirled generously with creamy Biscoff spread, filled with caramelised lotus biscuit crumbles, and topped with thick cream cheese frosting and crushed lotus. Indulgent, warm, and utterly unforgettable.',
+    imgs:['https://images.pexels.com/photos/3724353/pexels-photo-3724353.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop',
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Cinnamon_roll_with_cream_cheese.jpg/640px-Cinnamon_roll_with_cream_cheese.jpg'],
+    color:'#f5e6c8',details:{Dough:'Brioche soft',Topping:'Biscoff glaze',Size:'11cm Ø',Serves:'1 person'}},
+
+  { id:'oreo',    name:'Oreo Dream',        emoji:'🖤', badge:'🖤 Fan Fav',    tag:'bestseller', price:'₦3,200',
+    tagline:'Cookies & cream in swirl form',
+    desc:'Crushed Oreo cookies folded into our cream cheese filling, wrapped in pillowy brioche, topped with vanilla cream cheese frosting and a generous dusting of Oreo crumble. Black and white — beautifully decadent.',
+    imgs:['https://images.pexels.com/photos/6205791/pexels-photo-6205791.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop',
+          'https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
+    color:'#d0d0d0',details:{Dough:'Oreo-infused',Topping:'Cream cheese + Oreo crumble',Size:'11cm Ø',Serves:'1 person'}},
+
+  { id:'milk',    name:'Classic Milk',      emoji:'🥛', badge:'🥛 Classic',   tag:'classic',    price:'₦2,800',
+    tagline:'Soft, simple, and absolutely perfect',
+    desc:"The purist's cinnamon roll. Milk-enriched dough with a simple cinnamon-sugar swirl, baked until golden, glazed with sweet vanilla-milk icing that soaks into every single layer.",
+    imgs:['https://images.pexels.com/photos/5765828/pexels-photo-5765828.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop',
+          'https://images.pexels.com/photos/3724353/pexels-photo-3724353.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
+    color:'#fff5e6',details:{Dough:'Milk brioche',Topping:'Vanilla milk glaze',Size:'11cm Ø',Serves:'1 person'}},
+
+  { id:'strawberry', name:'Strawberry Blush', emoji:'🍓', badge:'🍓 New',   tag:'new',        price:'₦3,000',
+    tagline:'Pink, fruity and utterly gorgeous',
+    desc:'Brioche dough swirled with homemade strawberry jam, topped with vibrant pink strawberry cream cheese glaze and freeze-dried strawberry pieces. Beautiful inside and out.',
+    imgs:['https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop',
+          'https://images.pexels.com/photos/6205791/pexels-photo-6205791.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
+    color:'#ffe0eb',details:{Dough:'Vanilla brioche',Topping:'Strawberry glaze + dried berry',Size:'11cm Ø',Serves:'1 person'}},
+
+  { id:'chocolate', name:'Dark Chocolate',  emoji:'🍫', badge:'🍫 Rich',    tag:'bestseller', price:'₦3,400',
+    tagline:'For the true chocolate lover',
+    desc:'Dark cocoa dough rolled with chocolate ganache filling, baked until gooey in the middle, finished with melted Belgian dark chocolate drizzle and sea salt flakes.',
+    imgs:['https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop',
+          'https://images.pexels.com/photos/4110541/pexels-photo-4110541.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
+    color:'#3d1f0d',details:{Dough:'Dark cocoa',Topping:'Belgian choc + sea salt',Size:'11cm Ø',Serves:'1 person'}},
+
+  { id:'nutella',  name:'Nutella Hazelnut', emoji:'🌰', badge:'🌰 Creamy',  tag:'new',        price:'₦3,300',
+    tagline:'Hazelnut dreams wrapped in dough',
+    desc:'Every layer hides a generous smear of Nutella. Baked until the filling goes gooey, then topped with more Nutella, crushed roasted hazelnuts, and a light cocoa dusting.',
+    imgs:['https://images.pexels.com/photos/4110541/pexels-photo-4110541.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop',
+          'https://images.pexels.com/photos/3724353/pexels-photo-3724353.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
+    color:'#c4845c',details:{Dough:'Enriched brioche',Topping:'Nutella + roasted hazelnuts',Size:'11cm Ø',Serves:'1 person'}},
+
+  { id:'caramel',  name:'Salted Caramel',   emoji:'🍯', badge:'🍯 Sweet',   tag:'bestseller', price:'₦3,100',
+    tagline:'Sweet, salty, dangerously addictive',
+    desc:'Buttery caramel swirled into every layer, baked golden, finished with a warm salted caramel drizzle and a pinch of fleur de sel. The perfect balance of sweet and salty.',
+    imgs:['https://images.pexels.com/photos/4109998/pexels-photo-4109998.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop',
+          'https://images.pexels.com/photos/5765828/pexels-photo-5765828.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
+    color:'#f5a623',details:{Dough:'Butter brioche',Topping:'Salted caramel drizzle',Size:'11cm Ø',Serves:'1 person'}},
+
+  { id:'classic',  name:'Original Cinnamon',emoji:'✨', badge:'✨ Original', tag:'classic',    price:'₦2,600',
+    tagline:'The roll that started it all',
+    desc:"Warm Ceylon cinnamon and brown sugar nestled in the softest brioche dough you've ever tasted, slathered in thick tangy cream cheese frosting. Timeless. Perfect. Classic.",
+    imgs:['https://images.pexels.com/photos/5765828/pexels-photo-5765828.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop&sat=-10',
+          'https://images.pexels.com/photos/3724353/pexels-photo-3724353.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
+    color:'#f5e6c8',details:{Dough:'Ceylon cinnamon',Topping:'Cream cheese frosting',Size:'11cm Ø',Serves:'1 person'}},
+];
+
+/* fallback color boxes when images fail */
+function imgEl(f, large) {
+  const fallbackStyle = `background:${f.color};display:flex;align-items:center;justify-content:center;font-size:${large?'5rem':'3rem'};`;
+  return `<img
+    src="${f.imgs[0]}"
+    alt="${f.name}"
+    style="width:100%;height:100%;object-fit:cover;display:block"
+    onerror="
+      if(this._tried){
+        this.style.display='none';
+        this.parentElement.style.cssText+='${fallbackStyle}';
+        this.parentElement.innerHTML='<span style=\\'font-size:${large?'5rem':'3rem'};\\'>${f.emoji}</span>';
+      } else {
+        this._tried=true;
+        this.src='${f.imgs[1]}';
+      }
+    "
+  />`;
+}
+
+function card(f) {
+  return `<div class="flavour-card" onclick="openFlavour('${f.id}')">
+    <div class="card-img-wrap">${imgEl(f,false)}<span class="card-badge">${f.badge}</span></div>
+    <div class="card-body">
+      <div class="card-name">${f.name}</div>
+      <div class="card-desc">${f.desc.substring(0,90)}...</div>
+      <div class="card-footer"><span class="card-price">${f.price}</span><button class="card-btn">Explore →</button></div>
+    </div>
+  </div>`;
+}
+
+function go(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(id==='menu') renderMenu('all');
+  window.scrollTo(0,0);
+}
+
+function renderMenu(tag) {
+  const items = tag==='all' ? F : F.filter(f=>f.tag===tag);
+  document.getElementById('menu-grid').innerHTML = items.map(card).join('');
+}
+
+function filterMenu(tag,btn) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMenu(tag);
+}
+
+function openFlavour(id) {
+  const f = F.find(x=>x.id===id);
+  document.getElementById('flavour-content').innerHTML = `
+    <div class="flavour-hero">
+      <div class="flavour-hero-text">
+        <span class="flavour-tag">${f.emoji} Signature Roll</span>
+        <h1 class="flavour-page-name">${f.name}<br><em>${f.tagline}</em></h1>
+        <p class="flavour-desc">${f.desc}</p>
+        <div class="price-box"><span class="fp-label">Price</span><span class="fp-price">${f.price}</span><span class="fp-unit">/ roll</span></div>
+        <div style="margin-bottom:1.5rem">
+          <div style="font-size:.74rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-light);margin-bottom:.8rem">Quantity</div>
+          <div class="size-pills">
+            <button class="size-pill active" onclick="selSize(this)">1 Roll</button>
+            <button class="size-pill" onclick="selSize(this)">2 Rolls</button>
+            <button class="size-pill" onclick="selSize(this)">4 Rolls (Box)</button>
+            <button class="size-pill" onclick="selSize(this)">6 Rolls (Party)</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+          <button class="btn-primary" onclick="go('contact')">Order This Roll 🌀</button>
+          <button class="btn-outline" onclick="go('menu')">See All Flavours</button>
+        </div>
+      </div>
+      <div class="flavour-hero-img" style="aspect-ratio:1;overflow:hidden;border-radius:24px;box-shadow:0 16px 48px rgba(212,96,122,.25)">
+        ${imgEl(f,true)}
+      </div>
+    </div>
+    <div class="flavour-details">
+      <div class="section-tag">Roll Details</div>
+      <h2 class="section-title">What's Inside</h2>
+      <div class="details-grid">
+        ${Object.entries(f.details).map(([k,v])=>`<div class="detail-item"><div class="detail-label">${k}</div><div class="detail-value">${v}</div></div>`).join('')}
+        <div class="detail-item"><div class="detail-label">Allergens</div><div class="detail-value">Gluten, Dairy, Eggs</div></div>
+        <div class="detail-item"><div class="detail-label">Available</div><div class="detail-value">Mon – Sat Daily</div></div>
+      </div>
+    </div>`;
+
+  document.getElementById('also-grid').innerHTML = F.filter(x=>x.id!==id).slice(0,4).map(card).join('');
+  go('flavour');
+}
+
+function selSize(btn) {
+  document.querySelectorAll('.size-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// init
+document.getElementById('home-grid').innerHTML = F.map(card).join('');
+</script>
+</body>
+</html>
