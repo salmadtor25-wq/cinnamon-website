@@ -1,1194 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swirl & Bliss — Order Cinnamon Rolls, Abuja</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --pink-deep:#d4607a; --pink-mid:#f0a0b4; --pink-light:#fce8ef;
-    --pink-pale:#fff5f8; --cream:#fff9f5; --brown:#7b3f2a;
-    --white:#ffffff; --text-dark:#2d1a12; --text-mid:#6b3a2a;
-    --text-light:#c48a7a; --shadow:rgba(212,96,122,0.18);
-    --green:#27ae60; --blue:#2980b9; --orange:#e67e22; --red:#e74c3c;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden}
-
-  /* NAV */
-  nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(255,249,245,0.96);backdrop-filter:blur(12px);border-bottom:1.5px solid var(--pink-mid);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px}
-  .nav-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;font-style:italic;color:var(--pink-deep);cursor:pointer;text-decoration:none}
-  .nav-logo span{color:var(--brown)}
-  .nav-links{display:flex;gap:1.4rem;align-items:center;list-style:none}
-  .nav-links a{text-decoration:none;color:var(--text-mid);font-size:.88rem;font-weight:500;cursor:pointer;transition:color .2s}
-  .nav-links a:hover{color:var(--pink-deep)}
-  .nav-cta{background:var(--pink-deep)!important;color:white!important;padding:.45rem 1.2rem;border-radius:30px;font-size:.85rem!important}
-  .nav-user-name{font-size:.85rem;color:var(--text-mid);font-weight:600}
-
-  .page{display:none;min-height:100vh;padding-top:68px}
-  .page.active{display:block}
-
-  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-
-  /* TOAST */
-  #toast{position:fixed;bottom:2rem;right:2rem;background:var(--text-dark);color:white;padding:.9rem 1.4rem;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.22);font-size:.88rem;z-index:9999;display:none;align-items:center;gap:.7rem;max-width:320px;animation:slideDown .3s ease}
-  #toast.show{display:flex}
-  #toast.success{border-left:4px solid var(--green)}
-  #toast.error{border-left:4px solid var(--red)}
-  #toast.info{border-left:4px solid var(--blue)}
-
-  /* SUCCESS OVERLAY */
-  #success-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-  #success-overlay.show{display:flex}
-  .success-card{background:white;border-radius:24px;padding:2.5rem;max-width:420px;width:90%;text-align:center;animation:popIn .35s ease}
-  .success-icon{font-size:3.5rem;margin-bottom:.8rem}
-  .success-card h2{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;color:var(--text-dark);margin-bottom:.6rem}
-  .success-card p{color:var(--text-mid);line-height:1.65;margin-bottom:1.2rem;font-size:.92rem}
-  .success-detail{background:var(--pink-pale);border-radius:12px;padding:1rem 1.2rem;text-align:left;margin-bottom:1.4rem;font-size:.85rem}
-  .success-detail div{padding:.3rem 0;border-bottom:1px solid var(--pink-light);display:flex;justify-content:space-between}
-  .success-detail div:last-child{border:none}
-  .success-detail span{color:var(--text-mid)}
-  .success-detail strong{color:var(--text-dark);font-weight:600}
-
-  /* BUTTONS */
-  .btn-primary{background:var(--pink-deep);color:white;padding:.85rem 2rem;border-radius:40px;font-size:.95rem;font-weight:500;border:none;cursor:pointer;transition:all .2s;box-shadow:0 6px 22px var(--shadow);text-decoration:none;display:inline-block;font-family:'DM Sans',sans-serif}
-  .btn-primary:hover{background:#bf4f68;transform:translateY(-2px)}
-  .btn-outline{background:transparent;color:var(--pink-deep);padding:.85rem 2rem;border-radius:40px;font-size:.95rem;font-weight:500;cursor:pointer;border:2px solid var(--pink-deep);transition:all .2s;font-family:'DM Sans',sans-serif}
-  .btn-outline:hover{background:var(--pink-light)}
-  .btn-white{background:white;color:var(--pink-deep);padding:.9rem 2.2rem;border-radius:40px;font-weight:600;font-size:.95rem;border:none;cursor:pointer;transition:all .2s;box-shadow:0 4px 18px rgba(0,0,0,.15);font-family:'DM Sans',sans-serif}
-  .btn-white:hover{transform:translateY(-2px)}
-  .btn-sm{padding:.5rem 1.2rem!important;font-size:.82rem!important}
-  .btn-green{background:var(--green)!important;box-shadow:0 4px 16px rgba(39,174,96,.3)!important}
-  .btn-green:hover{background:#219a52!important}
-
-  /* HERO */
-  .hero{position:relative;min-height:calc(100vh - 68px);background:linear-gradient(135deg,#fff0f4 0%,#ffe8ef 45%,#ffd6e4 100%);display:flex;align-items:center;overflow:hidden;padding:4rem 5%}
-  .hero-content{position:relative;z-index:2;max-width:500px;animation:fadeUp .7s ease both}
-  .hero-badge{display:inline-block;background:var(--pink-mid);color:var(--brown);font-size:.74rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:.35rem 1rem;border-radius:30px;margin-bottom:1.4rem}
-  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,4.5vw,4rem);font-weight:900;line-height:1.08;margin-bottom:1.2rem}
-  .hero h1 em{color:var(--pink-deep);font-style:italic}
-  .hero p{font-size:1rem;color:var(--text-mid);line-height:1.7;margin-bottom:2.2rem}
-  .hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
-  .hero-img-side{position:absolute;right:0;top:0;bottom:0;width:50%;overflow:hidden}
-  .hero-img-side::before{content:'';position:absolute;left:0;top:0;bottom:0;width:55%;background:linear-gradient(to right,#ffe8ef,transparent);z-index:1}
-  .hero-img-side img{width:100%;height:100%;object-fit:cover}
-
-  .stats{background:var(--pink-deep);padding:1.8rem 5%;display:flex;justify-content:center;gap:4rem;flex-wrap:wrap}
-  .stat{text-align:center;color:white}
-  .stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900}
-  .stat-label{font-size:.75rem;opacity:.85;letter-spacing:1px;text-transform:uppercase}
-
-  .section-tag{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink-deep);margin-bottom:.8rem}
-  .section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,2.8vw,2.6rem);font-weight:900;color:var(--text-dark);line-height:1.15;margin-bottom:1rem}
-
-  /* FLAVOUR CARDS */
-  .flavours-section{padding:5rem 5%;background:var(--pink-pale)}
-  .grid-header{text-align:center;margin-bottom:3.5rem}
-  .flavours-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2rem;max-width:1200px;margin:0 auto}
-  .flavour-card{background:white;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(212,96,122,.1);transition:transform .25s,box-shadow .25s;cursor:pointer}
-  .flavour-card:hover{transform:translateY(-6px);box-shadow:0 14px 38px rgba(212,96,122,.2)}
-  .card-img-wrap{overflow:hidden;position:relative;aspect-ratio:4/3;background:var(--pink-light)}
-  .card-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
-  .flavour-card:hover .card-img{transform:scale(1.06)}
-  .card-badge{position:absolute;top:12px;left:12px;background:var(--pink-deep);color:white;font-size:.68rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:.25rem .7rem;border-radius:20px}
-  .card-body{padding:1.2rem 1.4rem 1.5rem}
-  .card-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--text-dark);margin-bottom:.4rem}
-  .card-desc{font-size:.84rem;color:var(--text-mid);line-height:1.55;margin-bottom:1rem}
-  .card-footer{display:flex;align-items:center;justify-content:space-between}
-  .card-price{font-weight:700;color:var(--pink-deep);font-size:1.05rem}
-  .card-btn{background:var(--pink-light);color:var(--pink-deep);border:none;border-radius:20px;padding:.4rem 1rem;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
-  .card-btn:hover{background:var(--pink-deep);color:white}
-
-  .why-us{padding:5rem 5%;background:white;text-align:center}
-  .why-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2rem;max-width:900px;margin:3rem auto 0}
-  .why-item{padding:2rem 1.5rem}
-  .why-icon{width:64px;height:64px;border-radius:50%;background:var(--pink-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-size:1.8rem}
-  .why-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--text-dark);margin-bottom:.5rem}
-  .why-text{font-size:.84rem;color:var(--text-mid);line-height:1.6}
-
-  .testimonials{padding:5rem 5%;background:var(--pink-pale);text-align:center}
-  .testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.5rem;max-width:1000px;margin:3rem auto 0}
-  .testi-card{background:white;border-radius:16px;padding:1.8rem;box-shadow:0 2px 14px rgba(212,96,122,.08);text-align:left}
-  .testi-stars{color:#f5a623;font-size:.9rem;margin-bottom:.6rem}
-  .testi-quote{font-size:2.5rem;color:var(--pink-mid);font-family:serif;line-height:1}
-  .testi-text{font-size:.9rem;color:var(--text-mid);line-height:1.65;margin-bottom:1rem;font-style:italic}
-  .testi-author{font-weight:600;color:var(--text-dark);font-size:.88rem}
-
-  .cta-banner{background:linear-gradient(135deg,var(--pink-deep),#c24d6a);padding:4rem 5%;text-align:center}
-  .cta-banner h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.5rem);color:white;font-weight:900;margin-bottom:1rem}
-  .cta-banner p{color:rgba(255,255,255,.85);margin-bottom:2rem}
-
-  /* FLAVOUR DETAIL PAGE */
-  .flavour-hero{padding:4rem 5% 3rem;background:linear-gradient(135deg,var(--pink-pale),#ffeaf0);display:flex;align-items:center;gap:4rem;flex-wrap:wrap}
-  .flavour-hero-text{flex:1;min-width:280px}
-  .flavour-hero-img{flex:1;min-width:280px;max-width:500px;aspect-ratio:1;overflow:hidden;border-radius:24px;box-shadow:0 16px 48px rgba(212,96,122,.25)}
-  .flavour-tag{display:inline-flex;align-items:center;gap:.5rem;background:var(--pink-deep);color:white;padding:.4rem 1.1rem;border-radius:30px;font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:1.2rem}
-  .flavour-page-name{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3.2rem);font-weight:900;color:var(--text-dark);line-height:1.1;margin-bottom:1rem}
-  .flavour-page-name em{color:var(--pink-deep);font-style:italic}
-  .flavour-desc{color:var(--text-mid);line-height:1.75;font-size:1rem;margin-bottom:2rem;max-width:480px}
-  .price-box{display:inline-flex;align-items:baseline;gap:.5rem;background:white;padding:1rem 1.5rem;border-radius:14px;box-shadow:0 4px 16px rgba(212,96,122,.12);margin-bottom:2rem}
-  .fp-label{font-size:.8rem;color:var(--text-light);font-weight:500}
-  .fp-price{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--pink-deep)}
-  .fp-unit{font-size:.8rem;color:var(--text-light)}
-  .size-pills{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:2.2rem}
-  .size-pill{padding:.5rem 1.2rem;border-radius:30px;border:2px solid var(--pink-mid);background:transparent;color:var(--text-mid);font-size:.85rem;cursor:pointer;transition:all .2s;font-weight:500;font-family:'DM Sans',sans-serif}
-  .size-pill.active,.size-pill:hover{background:var(--pink-deep);border-color:var(--pink-deep);color:white}
-  .flavour-details{padding:3rem 5%;background:white}
-  .details-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem;max-width:900px;margin-top:2rem}
-  .detail-item{background:var(--pink-pale);padding:1.2rem 1.4rem;border-radius:14px}
-  .detail-label{font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--pink-deep);font-weight:700;margin-bottom:.3rem}
-  .detail-value{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--text-dark)}
-  .also-like{padding:4rem 5%;background:var(--pink-pale)}
-  .also-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem;max-width:1000px;margin:2rem auto 0}
-
-  /* MENU PAGE */
-  .menu-hero{background:linear-gradient(135deg,#ffe0eb,#ffd0e0);padding:4rem 5%;text-align:center}
-  .menu-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--text-dark);margin-bottom:.8rem}
-  .menu-hero p{color:var(--text-mid);max-width:480px;margin:0 auto}
-  .menu-filters{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;padding:2.5rem 5% 0}
-  .filter-btn{padding:.5rem 1.4rem;border-radius:30px;border:2px solid var(--pink-mid);background:transparent;color:var(--text-mid);font-size:.85rem;cursor:pointer;transition:all .2s;font-weight:500;font-family:'DM Sans',sans-serif}
-  .filter-btn.active,.filter-btn:hover{background:var(--pink-deep);border-color:var(--pink-deep);color:white}
-  .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2rem;max-width:1200px;margin:3rem auto;padding:0 5%}
-
-  /* ABOUT PAGE */
-  .about-hero{padding:5rem 5%;background:linear-gradient(135deg,var(--pink-pale),#fff);display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
-  .about-hero img{width:100%;border-radius:24px;box-shadow:0 12px 40px rgba(212,96,122,.2);display:block;aspect-ratio:1;object-fit:cover}
-  .about-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,3vw,2.8rem);font-weight:900;color:var(--text-dark);margin-bottom:1.2rem}
-  .about-hero p{color:var(--text-mid);line-height:1.75;margin-bottom:1rem}
-  .team-section{padding:4rem 5%;background:white;text-align:center}
-  .team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:2rem;max-width:800px;margin:3rem auto 0}
-  .team-card{padding:1.5rem 1rem}
-  .team-avatar{width:80px;height:80px;border-radius:50%;background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem}
-  .team-name{font-family:'Playfair Display',serif;font-weight:700;color:var(--text-dark);margin-bottom:.3rem}
-  .team-role{font-size:.82rem;color:var(--text-light)}
-
-  /* CONTACT / ORDER PAGE */
-  .contact-hero{background:linear-gradient(135deg,#ffe0eb,#ffd0e0);padding:3.5rem 5%;text-align:center}
-  .contact-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,3.5vw,3rem);font-weight:900;color:var(--text-dark);margin-bottom:.8rem}
-  .contact-hero p{color:var(--text-mid);max-width:480px;margin:0 auto;line-height:1.7}
-  .contact-wrap{padding:4rem 5%;display:grid;grid-template-columns:1fr 1.3fr;gap:4rem;align-items:start;max-width:1100px;margin:0 auto}
-  .contact-info h2{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--text-dark);margin-bottom:1rem}
-  .contact-info p{color:var(--text-mid);line-height:1.7;margin-bottom:2rem}
-  .c-detail{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
-  .c-icon{width:44px;height:44px;background:var(--pink-light);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-  .c-label{font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--pink-deep);font-weight:600;margin-bottom:.2rem}
-  .c-value{color:var(--text-dark);font-weight:500}
-  .order-form-wrap{background:white;border-radius:20px;padding:2.5rem;box-shadow:0 8px 32px rgba(212,96,122,.1)}
-  .order-form-wrap h3{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--text-dark);margin-bottom:1.5rem}
-  .fg{margin-bottom:1.2rem}
-  .fg label{display:block;font-size:.82rem;font-weight:600;color:var(--text-mid);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.3px}
-  .fg input,.fg textarea,.fg select{width:100%;padding:.75rem 1rem;border-radius:10px;border:1.5px solid #f0c8d4;background:var(--pink-pale);font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text-dark);outline:none;transition:border-color .2s}
-  .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--pink-deep);background:white}
-  .fg textarea{resize:vertical;min-height:80px}
-  .fg input[readonly]{background:#f5f0ee;color:var(--text-mid);cursor:default;border-color:#e8d8d8}
-  .qty-row{display:flex;align-items:center;gap:.6rem}
-  .qty-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--pink-mid);background:transparent;color:var(--pink-deep);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-  .qty-btn:hover{background:var(--pink-deep);color:white;border-color:var(--pink-deep)}
-  .qty-display{width:48px;text-align:center;font-size:1rem;font-weight:700;color:var(--text-dark)}
-  .price-summary{background:var(--pink-pale);border-radius:12px;padding:1rem 1.2rem;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--pink-light)}
-  .ps-label{font-size:.85rem;color:var(--text-mid)}
-  .ps-total{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--pink-deep)}
-  .login-gate{text-align:center;padding:3rem 2rem}
-  .login-gate .gate-icon{font-size:3rem;margin-bottom:1rem}
-  .login-gate h3{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--text-dark);margin-bottom:.6rem}
-  .login-gate p{color:var(--text-mid);line-height:1.7;margin-bottom:1.5rem;font-size:.9rem}
-
-  /* AUTH PAGE */
-  .auth-page-wrap{min-height:calc(100vh - 68px);display:flex;align-items:center;justify-content:center;padding:2rem 5%;background:linear-gradient(135deg,#ffe0eb,#ffd0e0)}
-  .auth-card{background:white;border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(212,96,122,.22);display:flex;width:100%;max-width:860px;min-height:520px}
-  .auth-left{flex:1;background:linear-gradient(155deg,var(--pink-deep),#a83050);padding:3rem 2.5rem;display:flex;flex-direction:column;justify-content:center;color:white;min-width:280px}
-  .auth-left h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;margin-bottom:1rem;line-height:1.2}
-  .auth-left p{opacity:.88;line-height:1.75;font-size:.92rem;margin-bottom:2rem}
-  .auth-left ul{list-style:none}
-  .auth-left ul li{padding:.35rem 0;font-size:.88rem;opacity:.92}
-  .auth-left ul li::before{content:'✓  ';font-weight:800}
-  .auth-right{flex:1;padding:2.5rem;display:flex;flex-direction:column;justify-content:center}
-  .auth-tabs{display:flex;background:var(--pink-pale);border-radius:12px;padding:.3rem;margin-bottom:2rem}
-  .auth-tab{flex:1;padding:.55rem;border:none;background:transparent;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.86rem;font-weight:500;color:var(--text-mid);cursor:pointer;transition:all .2s}
-  .auth-tab.active{background:white;color:var(--pink-deep);box-shadow:0 2px 8px rgba(212,96,122,.18);font-weight:700}
-  .auth-panel{display:none}
-  .auth-panel.active{display:block}
-  .auth-panel h3{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:700;color:var(--text-dark);margin-bottom:.3rem}
-  .auth-panel .auth-sub{color:var(--text-mid);font-size:.84rem;margin-bottom:1.4rem}
-  .auth-error{background:#fff0f0;color:var(--red);padding:.65rem 1rem;border-radius:8px;font-size:.84rem;margin-bottom:.9rem;border:1px solid #ffd0d0;display:none}
-  .auth-error.show{display:block}
-  .auth-toggle{text-align:center;margin-top:1rem;font-size:.84rem;color:var(--text-mid)}
-  .auth-toggle a{color:var(--pink-deep);cursor:pointer;font-weight:600;text-decoration:none}
-  .auth-toggle a:hover{text-decoration:underline}
-  .vendor-hint{background:#fff9f0;border-radius:10px;padding:.75rem 1rem;font-size:.82rem;color:var(--text-mid);margin-bottom:1rem;border:1px dashed #f0c8a0}
-  .vendor-hint strong{color:#c87020}
-
-  /* VENDOR DASHBOARD */
-  .vendor-page-wrap{min-height:calc(100vh - 68px);background:#f9f4f2;padding:2.5rem 5% 4rem}
-  .vendor-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
-  .vendor-hdr h1{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:var(--text-dark)}
-  .vendor-hdr p{color:var(--text-mid);font-size:.88rem;margin-top:.2rem}
-  .vstats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;margin-bottom:2rem}
-  .vstat{background:white;border-radius:16px;padding:1.4rem;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center}
-  .vstat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--pink-deep);line-height:1}
-  .vstat-label{font-size:.74rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-top:.35rem}
-  .vstat.orange .vstat-num{color:var(--orange)}
-  .vstat.blue .vstat-num{color:var(--blue)}
-  .vstat.green .vstat-num{color:var(--green)}
-  .v-filters{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem}
-  .vf-btn{padding:.42rem 1.1rem;border-radius:20px;border:1.5px solid var(--pink-mid);background:transparent;color:var(--text-mid);font-size:.82rem;cursor:pointer;transition:all .2s;font-weight:500;font-family:'DM Sans',sans-serif}
-  .vf-btn.active,.vf-btn:hover{background:var(--pink-deep);border-color:var(--pink-deep);color:white}
-  .v-orders-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.2rem}
-  .v-order-card{background:white;border-radius:16px;padding:1.4rem;box-shadow:0 2px 12px rgba(0,0,0,.06);border-left:4px solid #ddd;transition:box-shadow .2s}
-  .v-order-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.1)}
-  .v-order-card[data-status="new"]{border-left-color:var(--orange)}
-  .v-order-card[data-status="confirmed"]{border-left-color:var(--blue)}
-  .v-order-card[data-status="delivered"]{border-left-color:var(--green)}
-  .v-order-card[data-status="cancelled"]{border-left-color:var(--red)}
-  .vc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem}
-  .vc-id{font-size:.75rem;font-weight:700;color:var(--text-light);letter-spacing:.8px}
-  .vc-date{font-size:.74rem;color:var(--text-light)}
-  .vc-customer{display:flex;align-items:center;gap:.8rem;background:var(--pink-pale);border-radius:10px;padding:.75rem;margin-bottom:.9rem}
-  .vc-avatar{width:36px;height:36px;border-radius:50%;background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
-  .vc-cname{font-weight:700;color:var(--text-dark);font-size:.88rem}
-  .vc-wa{display:flex;align-items:center;gap:.3rem;font-size:.8rem;color:var(--text-mid);margin-top:.15rem;flex-wrap:wrap}
-  .wa-link{display:inline-flex;align-items:center;gap:.3rem;background:#25D366;color:white;padding:.2rem .6rem;border-radius:20px;font-size:.73rem;font-weight:700;text-decoration:none;cursor:pointer;transition:background .2s}
-  .wa-link:hover{background:#1da851}
-  .vc-row{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.45rem;font-size:.86rem;color:var(--text-mid)}
-  .vc-row strong{color:var(--text-dark);font-weight:600;min-width:70px;flex-shrink:0}
-  .vc-status-row{display:flex;align-items:center;gap:.7rem;margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--pink-pale)}
-  .vc-status-label{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light)}
-  .status-select{flex:1;padding:.38rem .7rem;border-radius:8px;border:1.5px solid #f0c8d4;font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;outline:none;color:var(--text-dark);background:white;transition:border-color .2s}
-  .status-select:focus{border-color:var(--pink-deep)}
-  .badge{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
-  .badge-new{background:#fff3cd;color:#856404}
-  .badge-confirmed{background:#cce5ff;color:#004085}
-  .badge-delivered{background:#d4edda;color:#155724}
-  .badge-cancelled{background:#f8d7da;color:#721c24}
-  .empty-state{text-align:center;padding:4rem 2rem;color:var(--text-light);grid-column:1/-1}
-  .empty-state .empty-icon{font-size:3rem;margin-bottom:1rem}
-  .empty-state p{font-size:.9rem}
-
-  /* MY ORDERS PAGE */
-  .my-orders-wrap{min-height:calc(100vh - 68px);padding:3rem 5% 4rem;background:var(--pink-pale)}
-  .my-orders-wrap h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--text-dark);margin-bottom:.4rem}
-  .my-orders-wrap .sub-h{color:var(--text-mid);font-size:.9rem;margin-bottom:2rem}
-  .mo-card{background:white;border-radius:14px;padding:1.4rem;box-shadow:0 2px 12px rgba(212,96,122,.07);margin-bottom:.9rem;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;max-width:760px}
-  .mo-emoji{width:48px;height:48px;background:var(--pink-light);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
-  .mo-info{flex:1;min-width:180px}
-  .mo-name{font-family:'Playfair Display',serif;font-weight:700;color:var(--text-dark);margin-bottom:.15rem}
-  .mo-detail{font-size:.82rem;color:var(--text-mid);margin-bottom:.15rem}
-  .mo-id{font-size:.72rem;color:var(--text-light);letter-spacing:.3px}
-  .mo-right{text-align:right;flex-shrink:0}
-  .mo-price{font-weight:700;color:var(--pink-deep);font-size:.95rem}
-  .mo-date{font-size:.74rem;color:var(--text-light);margin-top:.2rem}
-
-  /* FOOTER */
-  footer{background:var(--text-dark);padding:3.5rem 5% 2rem;color:rgba(255,255,255,.7)}
-  .footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
-  .footer-brand{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;font-style:italic;color:var(--pink-mid);margin-bottom:1rem}
-  .footer-desc{font-size:.85rem;line-height:1.65}
-  .footer-heading{color:white;font-weight:600;font-size:.9rem;margin-bottom:1rem}
-  .footer-links{list-style:none}
-  .footer-links li{margin-bottom:.6rem}
-  .footer-links a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.85rem;cursor:pointer;transition:color .2s}
-  .footer-links a:hover{color:var(--pink-mid)}
-  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.5rem;font-size:.8rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
-  .social-links{display:flex;gap:.8rem;margin-top:1.2rem}
-  .s-link{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.85rem;text-decoration:none;color:white;transition:background .2s}
-  .s-link:hover{background:var(--pink-deep)}
-
-  @media(max-width:768px){
-    .hero-img-side{display:none}
-    .about-hero{grid-template-columns:1fr}
-    .contact-wrap{grid-template-columns:1fr}
-    .footer-top{grid-template-columns:1fr}
-    .stats{gap:1.5rem}
-    .auth-card{flex-direction:column;min-height:auto}
-    .auth-left{display:none}
-    .v-orders-grid{grid-template-columns:1fr}
-    .nav-links li.nav-hide-sm{display:none}
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prime Cutz Barbing Salon | Premium Grooming</title>
+  <meta name="description" content="Prime Cutz Barbing Salon offers premium haircuts, skin fades, beard grooming, and kids cuts. Book your appointment today." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Prata&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0c0f14;--surface:#121822;--surface-2:#1a2230;--text:#e9edf5;--muted:#a8b3c7;--brand:#d4a056;--ok:#43b581}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Manrope,sans-serif;background:radial-gradient(circle at top right,#111726,var(--bg));color:var(--text);line-height:1.6}
+    img{max-width:100%;display:block}
+    .container{width:min(1150px,92%);margin:auto}
+    header{position:sticky;top:0;background:rgba(12,15,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid #222b3d;z-index:50}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 0}
+    .logo{font-family:Prata,serif;font-size:1.4rem;color:var(--brand)}
+    .nav a{color:var(--muted);text-decoration:none;margin-left:1rem;font-weight:600}
+    .nav a:hover{color:var(--text)}
+    .btn{display:inline-block;background:var(--brand);color:#111;padding:.8rem 1.2rem;border-radius:10px;font-weight:800;text-decoration:none;border:none;cursor:pointer}
+    .btn:hover{filter:brightness(1.05)}
+    .hero{padding:4rem 0 3rem;display:grid;grid-template-columns:1.1fr 1fr;gap:2rem;align-items:center}
+    .hero h1{font-family:Prata,serif;font-size:clamp(2rem,5vw,3.8rem);line-height:1.12;margin-bottom:1rem}
+    .hero p{color:var(--muted);margin-bottom:1.3rem;max-width:58ch}
+    .hero-card{background:linear-gradient(180deg,var(--surface),var(--surface-2));border:1px solid #28334a;border-radius:18px;padding:.7rem}
+    .hero-card img{border-radius:12px;aspect-ratio:4/5;object-fit:cover}
+    section{padding:3.5rem 0}
+    h2{font-family:Prata,serif;font-size:2rem;margin-bottom:.5rem}
+    .sub{color:var(--muted);margin-bottom:1.5rem}
+    .grid{display:grid;gap:1rem}
+    .gallery{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .tile{background:var(--surface);border:1px solid #273146;border-radius:14px;overflow:hidden}
+    .tile img{height:220px;width:100%;object-fit:cover}
+    .tile p{padding:.8rem .9rem;color:var(--muted);font-size:.92rem}
+    .services{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .service{background:var(--surface);border:1px solid #273146;border-radius:14px;padding:1rem}
+    .service h3{margin-bottom:.4rem}
+    .price{margin-top:.5rem;color:var(--brand);font-weight:800}
+    .contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .panel{background:var(--surface);border:1px solid #273146;border-radius:14px;padding:1.2rem}
+    .list{list-style:none}
+    .list li{margin:.4rem 0;color:var(--muted)}
+    form{display:grid;gap:.8rem}
+    input,select,textarea{background:#0e131c;border:1px solid #2c3953;color:var(--text);border-radius:10px;padding:.75rem .85rem;font:inherit}
+    textarea{min-height:110px;resize:vertical}
+    .tiny{font-size:.83rem;color:var(--muted)}
+    .success{display:none;margin-top:.6rem;color:var(--ok);font-weight:700}
+    footer{padding:2.2rem 0;text-align:center;color:var(--muted)}
+    @media (max-width:860px){.hero,.contact-wrap{grid-template-columns:1fr}.nav .hide-sm{display:none}}
+  </style>
 </head>
 <body>
-
-<!-- TOAST -->
-<div id="toast"></div>
-
-<!-- SUCCESS OVERLAY -->
-<div id="success-overlay">
-  <div class="success-card">
-    <div class="success-icon">🎉</div>
-    <h2>Order Placed!</h2>
-    <p>Your cinnamon rolls are on their way to being baked! We'll reach out via WhatsApp to confirm.</p>
-    <div class="success-detail" id="success-detail"></div>
-    <button class="btn-primary" style="width:100%" onclick="closeSuccess()">View My Orders</button>
-  </div>
-</div>
-
-<!-- NAV -->
-<nav>
-  <a class="nav-logo" onclick="go('home')">Swirl <span>&</span> Bliss</a>
-  <ul class="nav-links" id="nav-links">
-    <!-- rendered by JS -->
-  </ul>
-</nav>
-
-<!-- ████ HOME PAGE ████ -->
-<div id="page-home" class="page active">
-  <section class="hero">
-    <div class="hero-content">
-      <span class="hero-badge">🌀 Freshly Baked in Abuja</span>
-      <h1>Every Swirl is a <em>Little Luxury</em></h1>
-      <p>Handcrafted cinnamon rolls in dreamy flavours — Lotus, Oreo, Chocolate, Strawberry & more. Baked fresh daily, delivered across Abuja.</p>
-      <div class="hero-btns">
-        <button class="btn-primary" onclick="go('menu')">Explore All Flavours</button>
-        <button class="btn-outline" onclick="requireAuth('contact')">Order Now</button>
-      </div>
+  <header>
+    <div class="container nav">
+      <a href="#home" class="logo">Prime Cutz</a>
+      <nav>
+        <a class="hide-sm" href="#gallery">Gallery</a>
+        <a class="hide-sm" href="#services">Services</a>
+        <a href="#contact">Book</a>
+      </nav>
     </div>
-    <div class="hero-img-side">
-      <img src="https://images.pexels.com/photos/3724353/pexels-photo-3724353.jpeg?auto=compress&cs=tinysrgb&w=900&h=800&fit=crop" alt="Fresh cinnamon rolls" onerror="this.style.display='none'">
-    </div>
-  </section>
+  </header>
 
-  <div class="stats">
-    <div class="stat"><div class="stat-num">8+</div><div class="stat-label">Unique Flavours</div></div>
-    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Happy Customers</div></div>
-    <div class="stat"><div class="stat-num">Daily</div><div class="stat-label">Fresh Baked</div></div>
-    <div class="stat"><div class="stat-num">Abuja</div><div class="stat-label">City-wide Delivery</div></div>
-  </div>
-
-  <section class="flavours-section">
-    <div class="grid-header">
-      <div class="section-tag">Our Signature Rolls</div>
-      <h2 class="section-title">Choose Your Favourite Swirl</h2>
-      <p style="color:var(--text-mid);max-width:480px;margin:0 auto;line-height:1.7">Each roll is lovingly handmade with premium ingredients. Click any flavour to explore its story.</p>
-    </div>
-    <div class="flavours-grid" id="home-grid"></div>
-  </section>
-
-  <section class="why-us">
-    <div class="section-tag">Why Swirl & Bliss</div>
-    <h2 class="section-title">Baked with Love, Delivered with Care</h2>
-    <div class="why-grid">
-      <div class="why-item"><div class="why-icon">🌾</div><div class="why-title">Premium Ingredients</div><div class="why-text">Only high-quality flour, real butter, and imported toppings in every single roll.</div></div>
-      <div class="why-item"><div class="why-icon">🕐</div><div class="why-title">Baked Fresh Daily</div><div class="why-text">No frozen dough — every roll is proofed and baked the morning of your order.</div></div>
-      <div class="why-item"><div class="why-icon">🚚</div><div class="why-title">Abuja-wide Delivery</div><div class="why-text">Wuse, Garki, Maitama, Asokoro, Gwarinpa, Jabi and beyond.</div></div>
-      <div class="why-item"><div class="why-icon">🎁</div><div class="why-title">Gift Boxes Available</div><div class="why-text">Beautifully packaged gift boxes for birthdays and celebrations.</div></div>
-    </div>
-  </section>
-
-  <section class="testimonials">
-    <div class="section-tag">Customer Love</div>
-    <h2 class="section-title">What Abuja is Saying</h2>
-    <div class="testi-grid">
-      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-quote">"</div><p class="testi-text">The Lotus Biscoff roll is absolutely divine. I ordered six and finished them in one sitting. No regrets!</p><div class="testi-author">Fatima A. — Maitama</div></div>
-      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-quote">"</div><p class="testi-text">Delivered to my office in Wuse 2 within an hour. The Oreo rolls were still warm. I'm obsessed!</p><div class="testi-author">Chidi O. — Wuse 2</div></div>
-      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-quote">"</div><p class="testi-text">Ordered a gift box for my friend's birthday — the packaging was stunning and the rolls were even better!</p><div class="testi-author">Aisha M. — Gwarinpa</div></div>
-    </div>
-  </section>
-
-  <div class="cta-banner">
-    <h2>Ready to Treat Yourself? 🌀</h2>
-    <p>Place your order today and get fresh rolls delivered right to your door in Abuja.</p>
-    <button class="btn-white" onclick="requireAuth('contact')">Order Your Rolls Now</button>
-  </div>
-
-  <footer>
-    <div class="footer-top">
-      <div><div class="footer-brand">Swirl & Bliss</div><p class="footer-desc">Abuja's favourite cinnamon roll bakery. Handcrafted daily with premium ingredients and a whole lot of love.</p><div class="social-links"><a class="s-link">📸</a><a class="s-link">💬</a><a class="s-link">🐦</a></div></div>
-      <div><div class="footer-heading">Quick Links</div><ul class="footer-links"><li><a onclick="go('home')">Home</a></li><li><a onclick="go('menu')">Our Rolls</a></li><li><a onclick="go('about')">About Us</a></li><li><a onclick="requireAuth('contact')">Order Now</a></li></ul></div>
-      <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a>📍 Wuse 2, Abuja</a></li><li><a>📞 +234 800 000 0000</a></li><li><a>✉️ hello@swirlandbliss.ng</a></li><li><a>🕐 Mon–Sat: 8am–7pm</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© 2025 Swirl & Bliss. All rights reserved.</span><span>Made with 🤍 in Abuja, Nigeria</span></div>
-  </footer>
-</div>
-
-<!-- ████ FLAVOUR DETAIL PAGE ████ -->
-<div id="page-flavour" class="page">
-  <div id="flavour-content"></div>
-  <section class="also-like">
-    <div class="section-tag">You Might Also Love</div>
-    <h2 class="section-title">More Dreamy Rolls</h2>
-    <div class="also-grid" id="also-grid"></div>
-  </section>
-  <div class="cta-banner">
-    <h2>Ready to Order? 🌀</h2>
-    <p>Place your order and we'll have these rolls baked fresh and at your door.</p>
-    <button class="btn-white" onclick="requireAuth('contact')">Order Now</button>
-  </div>
-  <footer>
-    <div class="footer-top">
-      <div><div class="footer-brand">Swirl & Bliss</div><p class="footer-desc">Abuja's favourite cinnamon roll bakery.</p></div>
-      <div><div class="footer-heading">Links</div><ul class="footer-links"><li><a onclick="go('home')">Home</a></li><li><a onclick="go('menu')">Our Rolls</a></li><li><a onclick="requireAuth('contact')">Order Now</a></li></ul></div>
-      <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a>📍 Wuse 2, Abuja</a></li><li><a>📞 +234 800 000 0000</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© 2025 Swirl & Bliss.</span><span>Made with 🤍 in Abuja</span></div>
-  </footer>
-</div>
-
-<!-- ████ MENU PAGE ████ -->
-<div id="page-menu" class="page">
-  <div class="menu-hero">
-    <div class="section-tag" style="display:block;margin-bottom:.6rem">Full Menu</div>
-    <h1>All Our Cinnamon Rolls</h1>
-    <p>Browse every flavour we bake. Each one is made fresh daily right here in Abuja.</p>
-  </div>
-  <div class="menu-filters">
-    <button class="filter-btn active" onclick="filterMenu('all',this)">All Rolls</button>
-    <button class="filter-btn" onclick="filterMenu('bestseller',this)">Best Sellers</button>
-    <button class="filter-btn" onclick="filterMenu('new',this)">New Flavours</button>
-    <button class="filter-btn" onclick="filterMenu('classic',this)">Classics</button>
-  </div>
-  <div class="menu-grid" id="menu-grid"></div>
-  <footer>
-    <div class="footer-top">
-      <div><div class="footer-brand">Swirl & Bliss</div><p class="footer-desc">Abuja's favourite cinnamon roll bakery.</p></div>
-      <div><div class="footer-heading">Links</div><ul class="footer-links"><li><a onclick="go('home')">Home</a></li><li><a onclick="go('about')">About</a></li><li><a onclick="requireAuth('contact')">Order</a></li></ul></div>
-      <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a>📍 Wuse 2, Abuja</a></li><li><a>📞 +234 800 000 0000</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© 2025 Swirl & Bliss.</span><span>Made with 🤍 in Abuja</span></div>
-  </footer>
-</div>
-
-<!-- ████ ABOUT PAGE ████ -->
-<div id="page-about" class="page">
-  <div class="about-hero">
-    <div>
-      <div class="section-tag">Our Story</div>
-      <h1>Baked from Passion, Swirled with Love</h1>
-      <p>Swirl & Bliss started in 2022 as a home kitchen experiment — one baker, one oven, and an obsession with the perfect cinnamon roll. What began as weekend bakes for friends quickly became Abuja's most talked-about sweet treat.</p>
-      <p>We believe a great cinnamon roll should be cloud-soft, generously filled, and indulgently topped. Every flavour we create is tested dozens of times before it earns a spot on our menu.</p>
-      <p>Today we bake fresh every morning, deliver city-wide, and serve hundreds of happy customers each week — but our kitchen philosophy hasn't changed: make every swirl count.</p>
-      <button class="btn-primary" onclick="requireAuth('contact')" style="margin-top:1.5rem">Order Your Rolls</button>
-    </div>
-    <img src="https://images.pexels.com/photos/3933270/pexels-photo-3933270.jpeg?auto=compress&cs=tinysrgb&w=700&h=700&fit=crop" alt="Baker making cinnamon rolls" onerror="this.src='https://placehold.co/700x700/fce8ef/d4607a?text=Our+Bakery'">
-  </div>
-  <section class="team-section">
-    <div class="section-tag">Meet the Team</div>
-    <h2 class="section-title">The Hands Behind Every Roll</h2>
-    <div class="team-grid">
-      <div class="team-card"><div class="team-avatar">👩🏾‍🍳</div><div class="team-name">Amina</div><div class="team-role">Head Baker & Founder</div></div>
-      <div class="team-card"><div class="team-avatar">👨🏾‍🍳</div><div class="team-name">Emeka</div><div class="team-role">Pastry Specialist</div></div>
-      <div class="team-card"><div class="team-avatar">👩🏽‍🍳</div><div class="team-name">Blessing</div><div class="team-role">Flavour Developer</div></div>
-      <div class="team-card"><div class="team-avatar">🚴🏾</div><div class="team-name">Tunde</div><div class="team-role">Delivery & Logistics</div></div>
-    </div>
-  </section>
-  <div class="cta-banner">
-    <h2>Come Taste the Difference 🌀</h2>
-    <p>Order today and discover why Abuja can't stop talking about us.</p>
-    <button class="btn-white" onclick="requireAuth('contact')">Place an Order</button>
-  </div>
-  <footer>
-    <div class="footer-top">
-      <div><div class="footer-brand">Swirl & Bliss</div><p class="footer-desc">Abuja's favourite cinnamon roll bakery.</p></div>
-      <div><div class="footer-heading">Links</div><ul class="footer-links"><li><a onclick="go('home')">Home</a></li><li><a onclick="go('menu')">Our Rolls</a></li><li><a onclick="requireAuth('contact')">Order</a></li></ul></div>
-      <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a>📍 Wuse 2, Abuja</a></li><li><a>📞 +234 800 000 0000</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© 2025 Swirl & Bliss.</span><span>Made with 🤍 in Abuja</span></div>
-  </footer>
-</div>
-
-<!-- ████ ORDER / CONTACT PAGE ████ -->
-<div id="page-contact" class="page" style="background:var(--pink-pale)">
-  <div class="contact-hero">
-    <div class="section-tag" style="display:block;margin-bottom:.6rem">Place Your Order</div>
-    <h1>Let's Get You Your Rolls 🌀</h1>
-    <p>Fill in your details and we'll confirm via WhatsApp. Same-day delivery for orders before 2pm.</p>
-  </div>
-  <div class="contact-wrap">
-    <div class="contact-info">
-      <h2>Get In Touch</h2>
-      <p>We're a small team that loves hearing from our customers. Reach out anytime!</p>
-      <div class="c-detail"><div class="c-icon">📍</div><div><div class="c-label">Location</div><div class="c-value">Wuse 2, Abuja FCT, Nigeria</div></div></div>
-      <div class="c-detail"><div class="c-icon">📞</div><div><div class="c-label">WhatsApp & Calls</div><div class="c-value">+234 800 000 0000</div></div></div>
-      <div class="c-detail"><div class="c-icon">✉️</div><div><div class="c-label">Email</div><div class="c-value">hello@swirlandbliss.ng</div></div></div>
-      <div class="c-detail"><div class="c-icon">🕐</div><div><div class="c-label">Hours</div><div class="c-value">Mon – Sat: 8:00am – 7:00pm</div></div></div>
-      <div class="c-detail"><div class="c-icon">🚚</div><div><div class="c-label">Delivery Areas</div><div class="c-value">Wuse, Garki, Maitama, Asokoro, Gwarinpa, Jabi, Kubwa, Lugbe</div></div></div>
-    </div>
-    <div id="order-form-container">
-      <!-- rendered by JS based on auth state -->
-    </div>
-  </div>
-  <footer>
-    <div class="footer-top">
-      <div><div class="footer-brand">Swirl & Bliss</div><p class="footer-desc">Abuja's favourite cinnamon roll bakery.</p></div>
-      <div><div class="footer-heading">Links</div><ul class="footer-links"><li><a onclick="go('home')">Home</a></li><li><a onclick="go('menu')">Our Rolls</a></li><li><a onclick="go('about')">About</a></li></ul></div>
-      <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a>📍 Wuse 2, Abuja</a></li><li><a>📞 +234 800 000 0000</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© 2025 Swirl & Bliss.</span><span>Made with 🤍 in Abuja</span></div>
-  </footer>
-</div>
-
-<!-- ████ AUTH PAGE ████ -->
-<div id="page-auth" class="page">
-  <div class="auth-page-wrap">
-    <div class="auth-card">
-      <div class="auth-left">
-        <h2>Welcome to Swirl & Bliss 🌀</h2>
-        <p>Sign in to place your order, track your rolls, and enjoy the freshest cinnamon rolls in Abuja.</p>
-        <ul>
-          <li>Order from 8+ signature flavours</li>
-          <li>Track your order status</li>
-          <li>We'll confirm via WhatsApp</li>
-          <li>Same-day delivery available</li>
-        </ul>
-      </div>
-      <div class="auth-right">
-        <div class="auth-tabs">
-          <button class="auth-tab active" onclick="switchAuthTab('customer',this)">Customer</button>
-          <button class="auth-tab" onclick="switchAuthTab('vendor',this)">Vendor Portal</button>
-        </div>
-
-        <!-- CUSTOMER PANEL -->
-        <div class="auth-panel active" id="panel-customer">
-          <div id="customer-signin">
-            <h3>Sign In</h3>
-            <p class="auth-sub">Don't have an account? <a onclick="toggleCustomerForm('signup')">Create one free</a></p>
-            <div class="auth-error" id="signin-error"></div>
-            <div class="fg"><label>Email Address</label><input type="email" id="signin-email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doSignin()"></div>
-            <div class="fg"><label>Password</label><input type="password" id="signin-password" placeholder="Your password" onkeydown="if(event.key==='Enter')doSignin()"></div>
-            <button class="btn-primary" style="width:100%;margin-top:.5rem" onclick="doSignin()">Sign In</button>
-          </div>
-          <div id="customer-signup" style="display:none">
-            <h3>Create Account</h3>
-            <p class="auth-sub">Already have an account? <a onclick="toggleCustomerForm('signin')">Sign in</a></p>
-            <div class="auth-error" id="signup-error"></div>
-            <div class="fg"><label>Full Name</label><input type="text" id="signup-name" placeholder="e.g. Amina Bello" onkeydown="if(event.key==='Enter')doSignup()"></div>
-            <div class="fg"><label>Email Address</label><input type="email" id="signup-email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doSignup()"></div>
-            <div class="fg"><label>WhatsApp Number</label><input type="tel" id="signup-whatsapp" placeholder="+234 800 000 0000" onkeydown="if(event.key==='Enter')doSignup()"></div>
-            <div class="fg"><label>Password</label><input type="password" id="signup-password" placeholder="Create a password" onkeydown="if(event.key==='Enter')doSignup()"></div>
-            <button class="btn-primary" style="width:100%;margin-top:.5rem" onclick="doSignup()">Create Account</button>
-          </div>
-        </div>
-
-        <!-- VENDOR PANEL -->
-        <div class="auth-panel" id="panel-vendor">
-          <h3>Vendor Login</h3>
-          <p class="auth-sub">Access the order dashboard and manage customer requests.</p>
-          <div class="vendor-hint">Demo credentials — Password: <strong>Swirl2025</strong></div>
-          <div class="auth-error" id="vendor-error"></div>
-          <div class="fg"><label>Vendor Password</label><input type="password" id="vendor-password" placeholder="Enter vendor password" onkeydown="if(event.key==='Enter')doVendorLogin()"></div>
-          <button class="btn-primary" style="width:100%;margin-top:.5rem" onclick="doVendorLogin()">Access Dashboard</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ████ VENDOR DASHBOARD PAGE ████ -->
-<div id="page-vendor" class="page">
-  <div class="vendor-page-wrap">
-    <div class="vendor-hdr">
+  <main id="home" class="container">
+    <section class="hero">
       <div>
-        <h1>Order Dashboard</h1>
-        <p id="vendor-greeting">Welcome back! Here are all your incoming orders.</p>
+        <h1>Real Barbers. Real Skill. Real Confidence.</h1>
+        <p>Prime Cutz Barbing Salon delivers crisp fades, professional beard shaping, and clean classic trims in a comfortable, modern space. Walk in sharp, walk out sharper.</p>
+        <a class="btn" href="#contact">Book Appointment</a>
       </div>
-      <button class="btn-outline btn-sm" onclick="renderVendorDashboard()">↻ Refresh</button>
-    </div>
-    <div class="vstats" id="vendor-stats"></div>
-    <div class="v-filters">
-      <button class="vf-btn active" onclick="filterVendorOrders('all',this)">All Orders</button>
-      <button class="vf-btn" onclick="filterVendorOrders('new',this)">New</button>
-      <button class="vf-btn" onclick="filterVendorOrders('confirmed',this)">Confirmed</button>
-      <button class="vf-btn" onclick="filterVendorOrders('delivered',this)">Delivered</button>
-      <button class="vf-btn" onclick="filterVendorOrders('cancelled',this)">Cancelled</button>
-    </div>
-    <div class="v-orders-grid" id="vendor-orders-grid"></div>
-  </div>
-</div>
-
-<!-- ████ MY ORDERS PAGE ████ -->
-<div id="page-orders" class="page">
-  <div class="my-orders-wrap">
-    <h1>My Orders</h1>
-    <p class="sub-h" id="my-orders-sub"></p>
-    <div id="my-orders-list"></div>
-  </div>
-</div>
-
-<script>
-/* ─── FLAVOUR DATA ─── */
-const F = [
-  { id:'lotus', name:'Lotus Biscoff', emoji:'🍪', badge:'⭐ Best Seller', tag:'bestseller', price:'₦3,500', priceNum:3500,
-    tagline:'Caramelised cookie heaven in every bite',
-    desc:'Our most popular roll — swirled generously with creamy Biscoff spread, filled with caramelised lotus biscuit crumbles, and topped with thick cream cheese frosting and crushed lotus. Indulgent, warm, and utterly unforgettable.',
-    imgs:['https://images.pexels.com/photos/3724353/pexels-photo-3724353.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
-    color:'#f5e6c8', details:{Dough:'Brioche soft',Topping:'Biscoff glaze',Size:'11cm Ø',Serves:'1 person'}},
-
-  { id:'oreo', name:'Oreo Dream', emoji:'🖤', badge:'🖤 Fan Fav', tag:'bestseller', price:'₦3,200', priceNum:3200,
-    tagline:'Cookies & cream in swirl form',
-    desc:'Crushed Oreo cookies folded into our cream cheese filling, wrapped in pillowy brioche, topped with vanilla cream cheese frosting and a generous dusting of Oreo crumble. Black and white — beautifully decadent.',
-    imgs:['https://images.pexels.com/photos/6205791/pexels-photo-6205791.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
-    color:'#d0d0d0', details:{Dough:'Oreo-infused',Topping:'Cream cheese + Oreo crumble',Size:'11cm Ø',Serves:'1 person'}},
-
-  { id:'milk', name:'Classic Milk', emoji:'🥛', badge:'🥛 Classic', tag:'classic', price:'₦2,800', priceNum:2800,
-    tagline:'Soft, simple, and absolutely perfect',
-    desc:"The purist's cinnamon roll. Milk-enriched dough with a simple cinnamon-sugar swirl, baked until golden, glazed with sweet vanilla-milk icing that soaks into every single layer.",
-    imgs:['https://images.pexels.com/photos/5765828/pexels-photo-5765828.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
-    color:'#fff5e6', details:{Dough:'Milk brioche',Topping:'Vanilla milk glaze',Size:'11cm Ø',Serves:'1 person'}},
-
-  { id:'strawberry', name:'Strawberry Blush', emoji:'🍓', badge:'🍓 New', tag:'new', price:'₦3,000', priceNum:3000,
-    tagline:'Pink, fruity and utterly gorgeous',
-    desc:'Brioche dough swirled with homemade strawberry jam, topped with vibrant pink strawberry cream cheese glaze and freeze-dried strawberry pieces. Beautiful inside and out.',
-    imgs:['https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
-    color:'#ffe0eb', details:{Dough:'Vanilla brioche',Topping:'Strawberry glaze + dried berry',Size:'11cm Ø',Serves:'1 person'}},
-
-  { id:'chocolate', name:'Dark Chocolate', emoji:'🍫', badge:'🍫 Rich', tag:'bestseller', price:'₦3,400', priceNum:3400,
-    tagline:'For the true chocolate lover',
-    desc:'Dark cocoa dough rolled with chocolate ganache filling, baked until gooey in the middle, finished with melted Belgian dark chocolate drizzle and sea salt flakes.',
-    imgs:['https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
-    color:'#3d1f0d', details:{Dough:'Dark cocoa',Topping:'Belgian choc + sea salt',Size:'11cm Ø',Serves:'1 person'}},
-
-  { id:'nutella', name:'Nutella Hazelnut', emoji:'🌰', badge:'🌰 Creamy', tag:'new', price:'₦3,300', priceNum:3300,
-    tagline:'Hazelnut dreams wrapped in dough',
-    desc:'Every layer hides a generous smear of Nutella. Baked until the filling goes gooey, then topped with more Nutella, crushed roasted hazelnuts, and a light cocoa dusting.',
-    imgs:['https://images.pexels.com/photos/4110541/pexels-photo-4110541.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
-    color:'#c4845c', details:{Dough:'Enriched brioche',Topping:'Nutella + roasted hazelnuts',Size:'11cm Ø',Serves:'1 person'}},
-
-  { id:'caramel', name:'Salted Caramel', emoji:'🍯', badge:'🍯 Sweet', tag:'bestseller', price:'₦3,100', priceNum:3100,
-    tagline:'Sweet, salty, dangerously addictive',
-    desc:'Buttery caramel swirled into every layer, baked golden, finished with a warm salted caramel drizzle and a pinch of fleur de sel. The perfect balance of sweet and salty.',
-    imgs:['https://images.pexels.com/photos/4109998/pexels-photo-4109998.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
-    color:'#f5a623', details:{Dough:'Butter brioche',Topping:'Salted caramel drizzle',Size:'11cm Ø',Serves:'1 person'}},
-
-  { id:'classic', name:'Original Cinnamon', emoji:'✨', badge:'✨ Original', tag:'classic', price:'₦2,600', priceNum:2600,
-    tagline:'The roll that started it all',
-    desc:"Warm Ceylon cinnamon and brown sugar nestled in the softest brioche dough you've ever tasted, slathered in thick tangy cream cheese frosting. Timeless. Perfect. Classic.",
-    imgs:['https://images.pexels.com/photos/5765828/pexels-photo-5765828.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&fit=crop'],
-    color:'#f5e6c8', details:{Dough:'Ceylon cinnamon',Topping:'Cream cheese frosting',Size:'11cm Ø',Serves:'1 person'}},
-];
-
-/* ─── STORAGE HELPERS ─── */
-const SK = { users:'sb_users', orders:'sb_orders', session:'sb_session' };
-const getUsers  = () => JSON.parse(localStorage.getItem(SK.users)  || '[]');
-const saveUsers = u  => localStorage.setItem(SK.users,  JSON.stringify(u));
-const getOrders = () => JSON.parse(localStorage.getItem(SK.orders) || '[]');
-const saveOrders= o  => localStorage.setItem(SK.orders, JSON.stringify(o));
-const getSession= () => JSON.parse(localStorage.getItem(SK.session) || 'null');
-const saveSession=s  => localStorage.setItem(SK.session, JSON.stringify(s));
-
-const VENDOR_PASSWORD = 'Swirl2025';
-
-/* ─── AUTH FUNCTIONS ─── */
-function doSignup() {
-  const name    = document.getElementById('signup-name').value.trim();
-  const email   = document.getElementById('signup-email').value.trim().toLowerCase();
-  const whatsapp= document.getElementById('signup-whatsapp').value.trim();
-  const password= document.getElementById('signup-password').value;
-  const err     = document.getElementById('signup-error');
-
-  if (!name || !email || !whatsapp || !password) return showError(err, 'Please fill in all fields.');
-  if (password.length < 6) return showError(err, 'Password must be at least 6 characters.');
-  if (!whatsapp.match(/^[+0-9\s\-()]{7,20}$/)) return showError(err, 'Please enter a valid WhatsApp number.');
-
-  const users = getUsers();
-  if (users.find(u => u.email === email)) return showError(err, 'That email is already registered. Please sign in.');
-
-  const user = { id: Date.now().toString(), name, email, password, whatsapp, role:'customer' };
-  users.push(user);
-  saveUsers(users);
-  saveSession({ id:user.id, name:user.name, email:user.email, whatsapp:user.whatsapp, role:'customer' });
-  err.classList.remove('show');
-  updateNav();
-  showToast('Welcome, ' + name.split(' ')[0] + '! Account created.', 'success');
-  go(pendingPage || 'contact');
-  pendingPage = null;
-}
-
-function doSignin() {
-  const email   = document.getElementById('signin-email').value.trim().toLowerCase();
-  const password= document.getElementById('signin-password').value;
-  const err     = document.getElementById('signin-error');
-
-  if (!email || !password) return showError(err, 'Please enter your email and password.');
-
-  const user = getUsers().find(u => u.email === email && u.password === password);
-  if (!user) return showError(err, 'Incorrect email or password. Try again.');
-
-  saveSession({ id:user.id, name:user.name, email:user.email, whatsapp:user.whatsapp, role:'customer' });
-  err.classList.remove('show');
-  updateNav();
-  showToast('Welcome back, ' + user.name.split(' ')[0] + '!', 'success');
-  go(pendingPage || 'contact');
-  pendingPage = null;
-}
-
-function doVendorLogin() {
-  const password = document.getElementById('vendor-password').value;
-  const err      = document.getElementById('vendor-error');
-
-  if (!password) return showError(err, 'Please enter the vendor password.');
-  if (password !== VENDOR_PASSWORD) return showError(err, 'Incorrect vendor password. Please try again.');
-
-  saveSession({ id:'vendor', name:'Vendor', role:'vendor' });
-  err.classList.remove('show');
-  document.getElementById('vendor-password').value = '';
-  updateNav();
-  showToast('Welcome to the Vendor Dashboard!', 'success');
-  go('vendor');
-}
-
-function logout() {
-  localStorage.removeItem(SK.session);
-  updateNav();
-  showToast('You have been signed out.', 'info');
-  go('home');
-}
-
-/* ─── ORDER FUNCTIONS ─── */
-function placeOrder(data) {
-  const orders = getOrders();
-  const order = {
-    id: 'ORD-' + Date.now().toString().slice(-6),
-    ...data,
-    status: 'new',
-    createdAt: new Date().toISOString()
-  };
-  orders.unshift(order);
-  saveOrders(orders);
-  return order;
-}
-
-function updateOrderStatus(orderId, status) {
-  const orders = getOrders();
-  const idx = orders.findIndex(o => o.id === orderId);
-  if (idx !== -1) { orders[idx].status = status; saveOrders(orders); }
-}
-
-function submitOrder() {
-  const user = getSession();
-  if (!user || user.role !== 'customer') return;
-
-  const flavorId  = document.getElementById('order-flavor').value;
-  const flavor    = F.find(f => f.id === flavorId);
-  const qty       = parseInt(document.getElementById('order-qty-display').textContent, 10) || 1;
-  const address   = document.getElementById('order-address').value.trim();
-  const whatsapp  = document.getElementById('order-whatsapp').value.trim();
-  const time      = document.getElementById('order-time').value;
-  const notes     = document.getElementById('order-notes').value.trim();
-  const errEl     = document.getElementById('order-error');
-
-  if (!address) return showError(errEl, 'Please enter your delivery address.');
-  if (!whatsapp) return showError(errEl, 'Please enter your WhatsApp number so we can reach you.');
-
-  errEl.classList.remove('show');
-
-  const total = flavor.priceNum * qty;
-  const order = placeOrder({
-    customerId:     user.id,
-    customerName:   user.name,
-    customerEmail:  user.email,
-    customerWhatsapp: whatsapp,
-    flavorId:       flavor.id,
-    flavorName:     flavor.name,
-    flavorEmoji:    flavor.emoji,
-    quantity:       qty,
-    pricePerRoll:   flavor.price,
-    totalPrice:     '₦' + total.toLocaleString(),
-    totalPriceNum:  total,
-    deliveryAddress: address,
-    deliveryTime:   time,
-    notes:          notes
-  });
-
-  document.getElementById('success-detail').innerHTML = `
-    <div><span>Order ID</span><strong>${order.id}</strong></div>
-    <div><span>Flavour</span><strong>${flavor.emoji} ${flavor.name}</strong></div>
-    <div><span>Quantity</span><strong>${qty} roll${qty>1?'s':''}</strong></div>
-    <div><span>Total</span><strong>${order.totalPrice}</strong></div>
-    <div><span>WhatsApp</span><strong>${whatsapp}</strong></div>
-    <div><span>Status</span><strong>New — we'll confirm soon!</strong></div>
-  `;
-  document.getElementById('success-overlay').classList.add('show');
-}
-
-function closeSuccess() {
-  document.getElementById('success-overlay').classList.remove('show');
-  go('orders');
-}
-
-/* ─── NAVIGATION ─── */
-let pendingPage = null;
-let pendingFlavor = null;
-
-function requireAuth(page) {
-  const user = getSession();
-  if (!user) {
-    pendingPage = page;
-    go('auth');
-    showToast('Please sign in to continue.', 'info');
-  } else if (user.role === 'vendor') {
-    showToast('You are logged in as a vendor.', 'info');
-    go('vendor');
-  } else {
-    go(page);
-  }
-}
-
-function go(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  window.scrollTo(0, 0);
-  if (id === 'menu')    renderMenu('all');
-  if (id === 'contact') renderOrderForm();
-  if (id === 'vendor')  renderVendorDashboard();
-  if (id === 'orders')  renderMyOrders();
-}
-
-function updateNav() {
-  const user = getSession();
-  const nl   = document.getElementById('nav-links');
-  if (!user) {
-    nl.innerHTML = `
-      <li class="nav-hide-sm"><a onclick="go('home')">Home</a></li>
-      <li class="nav-hide-sm"><a onclick="go('menu')">Our Rolls</a></li>
-      <li class="nav-hide-sm"><a onclick="go('about')">About</a></li>
-      <li><a onclick="go('auth')">Login</a></li>
-      <li><a onclick="requireAuth('contact')" class="nav-cta">Order Now</a></li>`;
-  } else if (user.role === 'vendor') {
-    nl.innerHTML = `
-      <li><a onclick="go('vendor')">Dashboard</a></li>
-      <li><a onclick="logout()">Logout</a></li>`;
-  } else {
-    nl.innerHTML = `
-      <li class="nav-hide-sm"><a onclick="go('home')">Home</a></li>
-      <li class="nav-hide-sm"><a onclick="go('menu')">Our Rolls</a></li>
-      <li><a onclick="go('orders')">My Orders</a></li>
-      <li><span class="nav-user-name">Hi, ${user.name.split(' ')[0]}!</span></li>
-      <li><a onclick="logout()">Logout</a></li>
-      <li><a onclick="go('contact')" class="nav-cta">Order Now</a></li>`;
-  }
-}
-
-/* ─── AUTH PAGE ─── */
-function switchAuthTab(tab, btn) {
-  document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('panel-' + tab).classList.add('active');
-}
-
-function toggleCustomerForm(which) {
-  document.getElementById('customer-signin').style.display = which === 'signin' ? '' : 'none';
-  document.getElementById('customer-signup').style.display = which === 'signup' ? '' : 'none';
-}
-
-function showError(el, msg) {
-  el.textContent = msg;
-  el.classList.add('show');
-}
-
-/* ─── ORDER FORM ─── */
-function renderOrderForm() {
-  const user = getSession();
-  const container = document.getElementById('order-form-container');
-
-  if (!user || user.role === 'vendor') {
-    container.innerHTML = `
-      <div class="order-form-wrap">
-        <div class="login-gate">
-          <div class="gate-icon">🔐</div>
-          <h3>Sign In to Place Your Order</h3>
-          <p>Create a free account or sign in to place your order. We'll use your details to confirm via WhatsApp.</p>
-          <button class="btn-primary" onclick="go('auth')">Sign In / Create Account</button>
-        </div>
-      </div>`;
-    return;
-  }
-
-  const selectedFlavor = pendingFlavor || F[0].id;
-  pendingFlavor = null;
-
-  const flavorOptions = F.map(f =>
-    `<option value="${f.id}" ${f.id===selectedFlavor?'selected':''}>${f.emoji} ${f.name} — ${f.price}</option>`
-  ).join('');
-
-  container.innerHTML = `
-    <div class="order-form-wrap">
-      <h3>Place Your Order</h3>
-      <div class="auth-error" id="order-error"></div>
-      <div class="fg">
-        <label>Your Name</label>
-        <input type="text" value="${escHtml(user.name)}" readonly>
+      <div class="hero-card">
+        <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1200&q=80" alt="Barber giving a fade haircut" loading="lazy">
       </div>
-      <div class="fg">
-        <label>WhatsApp Number</label>
-        <input type="tel" id="order-whatsapp" value="${escHtml(user.whatsapp || '')}" placeholder="+234 800 000 0000">
+    </section>
+
+    <section id="gallery">
+      <h2>Inside the Salon</h2>
+      <p class="sub">Take a look at our setup and our work quality.</p>
+      <div class="grid gallery">
+        <article class="tile"><img loading="lazy" src="https://images.unsplash.com/photo-1635273051839-003bf06a8751?auto=format&fit=crop&w=900&q=80" alt="Barber station and mirror"><p>Clean, organized stations with sanitized equipment.</p></article>
+        <article class="tile"><img loading="lazy" src="https://images.unsplash.com/photo-1622287162716-f311baa1a2b8?auto=format&fit=crop&w=900&q=80" alt="Client haircut close-up"><p>Detailed cuts and lineups with premium finishing.</p></article>
+        <article class="tile"><img loading="lazy" src="https://images.unsplash.com/photo-1512690459411-b0fd1c86b8f0?auto=format&fit=crop&w=900&q=80" alt="Professional barber tools"><p>Professional clippers, trimmers, and grooming tools.</p></article>
       </div>
-      <div class="fg">
-        <label>Choose Your Flavour</label>
-        <select id="order-flavor" onchange="updateOrderPrice()">${flavorOptions}</select>
+    </section>
+
+    <section id="services">
+      <h2>Services & Prices</h2>
+      <p class="sub">Simple pricing, premium grooming.</p>
+      <div class="grid services">
+        <div class="service"><h3>Classic Cut</h3><p>Clean regular haircut with blend and finish.</p><div class="price">$20</div></div>
+        <div class="service"><h3>Skin Fade</h3><p>Low, mid, or high fade with crisp lineup.</p><div class="price">$30</div></div>
+        <div class="service"><h3>Beard Trim & Shape</h3><p>Contour, trim, and beard styling.</p><div class="price">$18</div></div>
+        <div class="service"><h3>Kids Haircut</h3><p>Neat and patient-friendly grooming for boys.</p><div class="price">$15</div></div>
       </div>
-      <div class="fg">
-        <label>Quantity</label>
-        <div class="qty-row">
-          <button class="qty-btn" onclick="changeQty(-1)">−</button>
-          <span class="qty-display" id="order-qty-display">1</span>
-          <button class="qty-btn" onclick="changeQty(1)">+</button>
+    </section>
+
+    <section id="contact">
+      <h2>Book Your Session</h2>
+      <p class="sub">Fill this form and your email app will open with your booking details ready to send.</p>
+      <div class="contact-wrap">
+        <aside class="panel">
+          <h3>Contact Details</h3>
+          <ul class="list">
+            <li><strong>Email:</strong> salmadtor25@gmail.com</li>
+            <li><strong>Hours:</strong> Mon–Sat, 9:00 AM – 8:00 PM</li>
+            <li><strong>Walk-ins:</strong> Accepted (subject to queue)</li>
+          </ul>
+          <p class="tiny">Tip: For faster confirmation, include preferred date/time and service.</p>
+        </aside>
+
+        <div class="panel">
+          <form id="bookingForm" action="mailto:salmadtor25@gmail.com" method="post" enctype="text/plain">
+            <input name="name" type="text" placeholder="Your name" required>
+            <input name="phone" type="tel" placeholder="Phone number" required>
+            <input name="email" type="email" placeholder="Your email" required>
+            <select name="service" required>
+              <option value="">Select service</option>
+              <option>Classic Cut</option>
+              <option>Skin Fade</option>
+              <option>Beard Trim & Shape</option>
+              <option>Kids Haircut</option>
+            </select>
+            <input name="preferred_time" type="text" placeholder="Preferred date/time (e.g., Friday 4 PM)" required>
+            <textarea name="message" placeholder="Extra details"></textarea>
+            <button class="btn" type="submit">Send Booking Request</button>
+            <p class="success" id="successMsg">Thanks! Your booking request is ready to send.</p>
+          </form>
         </div>
       </div>
-      <div class="fg">
-        <label>Delivery Address</label>
-        <input type="text" id="order-address" placeholder="e.g. 10 Aminu Kano Crescent, Wuse 2">
-      </div>
-      <div class="fg">
-        <label>Preferred Delivery Time</label>
-        <select id="order-time">
-          <option>As soon as possible</option>
-          <option>Morning (8am – 12pm)</option>
-          <option>Afternoon (12pm – 4pm)</option>
-          <option>Evening (4pm – 7pm)</option>
-        </select>
-      </div>
-      <div class="fg">
-        <label>Special Instructions (optional)</label>
-        <textarea id="order-notes" placeholder="Allergies, extra frosting, gift wrapping..."></textarea>
-      </div>
-      <div class="price-summary">
-        <span class="ps-label">Total</span>
-        <span class="ps-total" id="order-total">${F.find(f=>f.id===selectedFlavor).price}</span>
-      </div>
-      <button class="btn-primary btn-green" style="width:100%;margin-top:1rem;font-size:1rem;padding:1rem" onclick="submitOrder()">
-        Place Order & Confirm via WhatsApp 💬
-      </button>
-    </div>`;
-}
+    </section>
+  </main>
 
-let _orderQty = 1;
+  <footer>
+    © 2026 Prime Cutz Barbing Salon. Built for real grooming needs.
+  </footer>
 
-function changeQty(delta) {
-  _orderQty = Math.max(1, Math.min(20, _orderQty + delta));
-  document.getElementById('order-qty-display').textContent = _orderQty;
-  updateOrderPrice();
-}
-
-function updateOrderPrice() {
-  const flavorId = document.getElementById('order-flavor')?.value;
-  if (!flavorId) return;
-  const flavor = F.find(f => f.id === flavorId);
-  const total  = flavor.priceNum * _orderQty;
-  document.getElementById('order-total').textContent = '₦' + total.toLocaleString();
-}
-
-/* ─── VENDOR DASHBOARD ─── */
-let _vendorFilter = 'all';
-
-function renderVendorDashboard() {
-  const orders = getOrders();
-  const counts = { all: orders.length, new: 0, confirmed: 0, delivered: 0, cancelled: 0 };
-  orders.forEach(o => { if (counts[o.status] !== undefined) counts[o.status]++; });
-
-  document.getElementById('vendor-stats').innerHTML = `
-    <div class="vstat"><div class="vstat-num">${counts.all}</div><div class="vstat-label">Total Orders</div></div>
-    <div class="vstat orange"><div class="vstat-num">${counts.new}</div><div class="vstat-label">New</div></div>
-    <div class="vstat blue"><div class="vstat-num">${counts.confirmed}</div><div class="vstat-label">Confirmed</div></div>
-    <div class="vstat green"><div class="vstat-num">${counts.delivered}</div><div class="vstat-label">Delivered</div></div>`;
-
-  filterVendorOrders(_vendorFilter, document.querySelector('.vf-btn.active'));
-}
-
-function filterVendorOrders(filter, btn) {
-  _vendorFilter = filter;
-  document.querySelectorAll('.vf-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-
-  const orders  = getOrders();
-  const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
-  const grid    = document.getElementById('vendor-orders-grid');
-
-  if (!filtered.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No ${filter === 'all' ? '' : filter + ' '}orders yet.</p></div>`;
-    return;
-  }
-
-  grid.innerHTML = filtered.map(o => `
-    <div class="v-order-card" data-status="${o.status}" id="vcard-${o.id}">
-      <div class="vc-top">
-        <span class="vc-id">${o.id}</span>
-        <span class="vc-date">${formatDate(o.createdAt)}</span>
-      </div>
-      <div class="vc-customer">
-        <div class="vc-avatar">👤</div>
-        <div>
-          <div class="vc-cname">${escHtml(o.customerName)}</div>
-          <div class="vc-wa">
-            ${escHtml(o.customerWhatsapp)}
-            <a class="wa-link" href="https://wa.me/${formatWA(o.customerWhatsapp)}" target="_blank" rel="noopener">
-              💬 Chat
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="vc-row"><strong>Flavour</strong>${o.flavorEmoji} ${escHtml(o.flavorName)}</div>
-      <div class="vc-row"><strong>Quantity</strong>${o.quantity} roll${o.quantity>1?'s':''}</div>
-      <div class="vc-row"><strong>Total</strong>${escHtml(o.totalPrice)}</div>
-      <div class="vc-row"><strong>Address</strong>${escHtml(o.deliveryAddress)}</div>
-      <div class="vc-row"><strong>Time</strong>${escHtml(o.deliveryTime || 'ASAP')}</div>
-      ${o.notes ? `<div class="vc-row"><strong>Notes</strong><em>${escHtml(o.notes)}</em></div>` : ''}
-      <div class="vc-status-row">
-        <span class="vc-status-label">Status</span>
-        <select class="status-select" onchange="onVendorStatusChange('${o.id}', this)">
-          <option value="new"       ${o.status==='new'       ?'selected':''}>🟠 New</option>
-          <option value="confirmed" ${o.status==='confirmed' ?'selected':''}>🔵 Confirmed</option>
-          <option value="delivered" ${o.status==='delivered' ?'selected':''}>🟢 Delivered</option>
-          <option value="cancelled" ${o.status==='cancelled' ?'selected':''}>🔴 Cancelled</option>
-        </select>
-      </div>
-    </div>`).join('');
-}
-
-function onVendorStatusChange(orderId, selectEl) {
-  updateOrderStatus(orderId, selectEl.value);
-  const card = document.getElementById('vcard-' + orderId);
-  if (card) card.dataset.status = selectEl.value;
-  renderVendorDashboard();
-  showToast('Order ' + orderId + ' updated to ' + selectEl.value + '.', 'success');
-}
-
-/* ─── MY ORDERS ─── */
-function renderMyOrders() {
-  const user = getSession();
-  if (!user || user.role === 'vendor') { go('home'); return; }
-
-  const orders  = getOrders().filter(o => o.customerId === user.id);
-  const subEl   = document.getElementById('my-orders-sub');
-  const listEl  = document.getElementById('my-orders-list');
-
-  subEl.textContent = orders.length
-    ? `You have ${orders.length} order${orders.length > 1 ? 's' : ''}. We'll update you on WhatsApp.`
-    : 'You have no orders yet.';
-
-  if (!orders.length) {
-    listEl.innerHTML = `
-      <div style="text-align:center;padding:3rem 1rem">
-        <div style="font-size:3rem;margin-bottom:1rem">🌀</div>
-        <p style="color:var(--text-mid);margin-bottom:1.5rem">No orders yet! Browse our flavours and place your first order.</p>
-        <button class="btn-primary" onclick="go('menu')">Browse Flavours</button>
-      </div>`;
-    return;
-  }
-
-  listEl.innerHTML = orders.map(o => `
-    <div class="mo-card">
-      <div class="mo-emoji">${o.flavorEmoji}</div>
-      <div class="mo-info">
-        <div class="mo-name">${escHtml(o.flavorName)}</div>
-        <div class="mo-detail">${o.quantity} roll${o.quantity>1?'s':''} · ${escHtml(o.deliveryAddress)}</div>
-        <div class="mo-id">${o.id}</div>
-      </div>
-      <div class="mo-right">
-        <div class="mo-price">${escHtml(o.totalPrice)}</div>
-        <div class="mo-date">${formatDate(o.createdAt)}</div>
-        <div style="margin-top:.4rem">${statusBadge(o.status)}</div>
-      </div>
-    </div>`).join('');
-}
-
-/* ─── FLAVOUR CARDS ─── */
-function imgEl(f) {
-  return `<img src="${f.imgs[0]}" alt="${f.name}" style="width:100%;height:100%;object-fit:cover;display:block"
-    onerror="this.style.display='none';this.parentElement.style.cssText+='background:${f.color};display:flex;align-items:center;justify-content:center;';this.parentElement.innerHTML='<span style=\\'font-size:3rem;\\'>${f.emoji}</span>'">`;
-}
-
-function card(f) {
-  return `<div class="flavour-card" onclick="openFlavour('${f.id}')">
-    <div class="card-img-wrap">${imgEl(f)}<span class="card-badge">${f.badge}</span></div>
-    <div class="card-body">
-      <div class="card-name">${f.name}</div>
-      <div class="card-desc">${f.desc.substring(0, 90)}…</div>
-      <div class="card-footer"><span class="card-price">${f.price}</span><button class="card-btn">Explore →</button></div>
-    </div>
-  </div>`;
-}
-
-function renderMenu(tag) {
-  const items = tag === 'all' ? F : F.filter(f => f.tag === tag);
-  document.getElementById('menu-grid').innerHTML = items.map(card).join('');
-}
-
-function filterMenu(tag, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderMenu(tag);
-}
-
-function openFlavour(id) {
-  const f = F.find(x => x.id === id);
-  document.getElementById('flavour-content').innerHTML = `
-    <div class="flavour-hero">
-      <div class="flavour-hero-text">
-        <span class="flavour-tag">${f.emoji} Signature Roll</span>
-        <h1 class="flavour-page-name">${f.name}<br><em>${f.tagline}</em></h1>
-        <p class="flavour-desc">${f.desc}</p>
-        <div class="price-box">
-          <span class="fp-label">Price</span>
-          <span class="fp-price">${f.price}</span>
-          <span class="fp-unit">/ roll</span>
-        </div>
-        <div style="display:flex;gap:1rem;flex-wrap:wrap">
-          <button class="btn-primary" onclick="orderThisRoll('${f.id}')">Order This Roll 🌀</button>
-          <button class="btn-outline" onclick="go('menu')">See All Flavours</button>
-        </div>
-      </div>
-      <div class="flavour-hero-img">${imgEl(f)}</div>
-    </div>
-    <div class="flavour-details">
-      <div class="section-tag">Roll Details</div>
-      <h2 class="section-title">What's Inside</h2>
-      <div class="details-grid">
-        ${Object.entries(f.details).map(([k,v])=>`<div class="detail-item"><div class="detail-label">${k}</div><div class="detail-value">${v}</div></div>`).join('')}
-        <div class="detail-item"><div class="detail-label">Allergens</div><div class="detail-value">Gluten, Dairy, Eggs</div></div>
-        <div class="detail-item"><div class="detail-label">Available</div><div class="detail-value">Mon – Sat Daily</div></div>
-      </div>
-    </div>`;
-
-  document.getElementById('also-grid').innerHTML = F.filter(x => x.id !== id).slice(0, 4).map(card).join('');
-  go('flavour');
-}
-
-function orderThisRoll(flavorId) {
-  pendingFlavor = flavorId;
-  requireAuth('contact');
-}
-
-/* ─── UTILITY ─── */
-function showToast(msg, type = 'info') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'show ' + type;
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 3500);
-}
-
-function formatDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-NG', { day:'numeric', month:'short', year:'numeric' })
-    + ' ' + d.toLocaleTimeString('en-NG', { hour:'2-digit', minute:'2-digit' });
-}
-
-function formatWA(num) {
-  if (!num) return '';
-  num = num.replace(/[\s\-()]/g, '');
-  if (num.startsWith('0')) num = '234' + num.slice(1);
-  if (num.startsWith('+')) num = num.slice(1);
-  return num;
-}
-
-function escHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function statusBadge(status) {
-  const map = { new:'badge-new', confirmed:'badge-confirmed', delivered:'badge-delivered', cancelled:'badge-cancelled' };
-  return `<span class="badge ${map[status]||''}">${status}</span>`;
-}
-
-/* ─── INIT ─── */
-document.getElementById('home-grid').innerHTML = F.map(card).join('');
-updateNav();
-</script>
+  <script>
+    const form = document.getElementById('bookingForm');
+    const success = document.getElementById('successMsg');
+    form.addEventListener('submit', () => {
+      success.style.display = 'block';
+      setTimeout(() => { success.style.display = 'none'; }, 4000);
+    });
+  </script>
 </body>
 </html>
