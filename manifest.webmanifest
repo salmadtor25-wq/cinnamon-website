@@ -1,0 +1,17 @@
+{
+  "name": "NexusServe",
+  "short_name": "NexusServe",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "description": "On-demand service marketplace with intelligent provider dispatch.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
